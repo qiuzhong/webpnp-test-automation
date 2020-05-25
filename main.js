@@ -21,7 +21,7 @@ const sendMail = require('./send_mail.js');
 async function main() {
   let speedometer2Results = await run_test.runSpeedometer2AndProcessResults();
 //   let webXPRT3Results = await run_test.runWebXPRT3AndProcessResults();
-  const deviceInfo = await genDeviceInfo(...testResult);
+  const deviceInfo = await genDeviceInfo(speedometer2Results);
 
   await sendMail(deviceInfo + JSON.stringify(speedometer2Results));
 }
