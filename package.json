@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/qiuzhong/webpnp-test-automation#readme",
   "dependencies": {
-    "playwright": "^1.0.2"
+    "nodemailer": "^6.4.6",
+    "playwright": "^1.0.2",
+    "systeminformation": "^4.26.4"
   }
 }
