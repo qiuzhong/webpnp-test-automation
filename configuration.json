@@ -29,6 +29,7 @@
     //     }
     // ],
     // "chrome_path": "",
+    // "test_cadence": "",
     // "mail": {
     //     "from": "wanming.lin@intel.com",
     //     "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
