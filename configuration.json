@@ -1,0 +1,13 @@
+{
+    "WEBXPRT3_URL": "http://test-server2.sh.intel.com/webxprt3/",
+    "SPEEDOMETER2_URL": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
+
+    "showDetailedWebXPRT3Score": true,
+    "showDetailedSpeedometer2Score": true,
+
+    "RUN_WEBXPRT3_TIMES": 3,
+    "RUN_SPEEDOMETER2_TIMES": 3,
+
+    "LAST_WEBXPRT3_TEST_SCORE_FILE": "last_webxprt3_score.json",
+    "LAST_SPEEDOMETER2_TEST_SCORE_FILE": "last_speed2meter_score.json"
+}
