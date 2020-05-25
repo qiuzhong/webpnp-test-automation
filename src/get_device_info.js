@@ -1,16 +1,21 @@
 "use strict";
 
 const si = require('systeminformation');
+const getOtherInfo = require('./get_other_info.js');
 
 /*
-* Get information of test environment
+* Get information of device info
 */
-async function genDeviceInfo(browserInfo, gpuDriverVer) {
+async function getDeviceInfo() {
+  const otherInfo = await getOtherInfo();
+  const chromeVersion = otherInfo.chromeVersion;
+  const gpuDriverVersion = otherInfo.gpuDriverVersion;
 
+  console.log('********** Get all device info **********');
   // Get GPU info
   const gpuData = await si.graphics();
   const gpuModel = gpuData.controllers[0].model;
-  const gpuInfo = gpuModel + " (" + gpuDriverVer + ")";
+  const gpuInfo = gpuModel + " (" + gpuDriverVersion + ")";
 
   // Get CPU info
   const cpuData = await si.cpu();
@@ -28,40 +33,18 @@ async function genDeviceInfo(browserInfo, gpuDriverVer) {
   const osData = await si.osInfo();
   const osInfo = osData.distro + " (" + osData.release + ")";
 
-  // Generate device info as HTML
+  // Generate device info object
+  const deviceInfo = {
+    "cpu": cpuInfo,
+    "gpu": gpuInfo,
+    "memory": memSize,
+    "hardware": hwInfo,
+    "OS": osInfo,
+    "Browser": "Chrome_" + chromeVersion
+  };
 
-    const tableRows = [
-      {
-        name: "CPU",
-        info: cpuInfo,
-      },
-      {
-        name: "GPU",
-        info: gpuInfo,
-      },
-      {
-        name: "Memory",
-        info: memSize,
-      },
-      {
-        name: "Hardware",
-        info: hwInfo,
-      },
-      {
-        name: "OS",
-        info: osInfo,
-      },
-      {
-        name: "Browser",
-        info: browserInfo,
-      },
-    ];
-    let table = "<table>";
-    for (const row of tableRows) {
-      table += "<tr><td>" + row.name + "</td><td>" + row.info + "</td></tr>";
-    }
-
-  return Promise.resolve(table + "</table>");
+  console.log(deviceInfo);
+  return Promise.resolve(deviceInfo);
 };
 
 module.exports = getDeviceInfo;
