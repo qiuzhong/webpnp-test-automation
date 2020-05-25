@@ -1,41 +1,41 @@
 {
 
-    "WEBXPRT3_URL": "http://test-server2.sh.intel.com/webxprt3/",
-    "SPEEDOMETER2_URL": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
+    // "WEBXPRT3_URL": "http://test-server2.sh.intel.com/webxprt3/",
+    // "SPEEDOMETER2_URL": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
 
-    "showDetailedWebXPRT3Score": true,
-    "showDetailedSpeedometer2Score": true,
+    // "showDetailedWebXPRT3Score": true,
+    // "showDetailedSpeedometer2Score": true,
 
-    "RUN_WEBXPRT3_TIMES": 3,
-    "RUN_SPEEDOMETER2_TIMES": 3,
+    // "RUN_WEBXPRT3_TIMES": 3,
+    // "RUN_SPEEDOMETER2_TIMES": 3,
 
-    "LAST_WEBXPRT3_TEST_SCORE_FILE": "last_webxprt3_score.json",
-    "LAST_SPEEDOMETER2_TEST_SCORE_FILE": "last_speed2meter_score.json",
+    // "LAST_WEBXPRT3_TEST_SCORE_FILE": "last_webxprt3_score.json",
+    // "LAST_SPEEDOMETER2_TEST_SCORE_FILE": "last_speed2meter_score.json",
 
-    "RUN_WEBXPRT3_TEST_INTERNAL": 5000,
-    "RUN_SPEEDOMETER2_TEST_INTERVAL": 5000
+    // "RUN_WEBXPRT3_TEST_INTERNAL": 5000,
+    // "RUN_SPEEDOMETER2_TEST_INTERVAL": 5000
 
 
-    // "workloads": [
-    //     {
-    //         "name": "WebXprt3",
-    //         "url": "http://test-server2.sh.intel.com/webxprt3/",
-    //         "run_times": 5
-    //     },
-    //     {
-    //         "name": "Speedometer2",
-    //         "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
-    //         "run_times": 5
-    //     }
-    // ],
-    // "chrome_path": "",
-    // "test_cadence": "",
-    // "mail": {
-    //     "from": "wanming.lin@intel.com",
-    //     "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
-    // },
-    // "error_moniter": {
-    //     "from": "wanming.lin@intel.com",
-    //     "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
-    // }
+    "workloads": [
+        {
+            "name": "WebXprt3",
+            "url": "http://test-server2.sh.intel.com/webxprt3/",
+            "run_times": 5
+        },
+        {
+            "name": "Speedometer2",
+            "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
+            "run_times": 5
+        }
+    ],
+    "chrome_path": "C:\\Users\\wlin19\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
+    "test_cadence": "",
+    "mail": {
+        "from": "wanming.lin@intel.com",
+        "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
+    },
+    "error_moniter": {
+        "from": "wanming.lin@intel.com",
+        "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
+    }
 }
