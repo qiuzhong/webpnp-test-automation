@@ -21,8 +21,8 @@ async function main() {
 main();
 
 // cron.schedule('0 0 3 * * *', () => {
-//     main().catch(err => (){
-//         sendMail(err);
-//     }
+//   main().catch(err => () {
+//     sendMail(err);
+//   }
 // });
 
