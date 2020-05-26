@@ -26,20 +26,24 @@ async function getOtherInfo() {
   // Get GPU driver version
   console.log('********** GPU driver version **********');
   await page.goto('chrome://gpu');
-  const gpuDriverVersionText = await page.evaluate(() =>
-    [...document.querySelectorAll('#info-view-table > tbody > tr:nth-child(19)')].map(({ innerText }) => innerText)
-  );
-  if (gpuDriverVersionText[0].split('\t')[0] !== "Driver version")
+  const gpuDriverVersion = await page.evaluate(() => {
+    let table = document.querySelector('#basic-info').querySelector('#info-view-table');
+    for (let i = 0; i < table.rows.length; i++) {
+      if (table.rows[i].cells[0].innerText === 'Driver version') {
+        return table.rows[i].cells[1].innerText;
+      }
+    }
+    return '';
+  });
+  if (gpuDriverVersion === '')
     console.error("Error: Cann't get GPU Driver version!");
-  const gpuDriverVerion = gpuDriverVersionText[0].split('\t')[1];
-  console.log(gpuDriverVerion);
+  console.log(gpuDriverVersion);
 
-  browser.close().catch(console.error);
-  // await browser.close(); // A bug here, await close() method will hang and never been resolved.
+  await browser.close(); // A bug here, await close() method will hang and never been resolved.
 
   const otherInfo = {
     "chromeVersion": chromeVersion,
-    "gpuDriverVersion": gpuDriverVerion
+    "gpuDriverVersion": gpuDriverVersion
   };
 
  return Promise.resolve(otherInfo);

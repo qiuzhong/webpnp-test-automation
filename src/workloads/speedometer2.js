@@ -1,14 +1,17 @@
-const settings = require('./configuration.json');
+const settings = require('../../config.json');
 const { chromium } = require('playwright');
 
 async function runSpeedometer2Test() {
-    console.log('********** Start running Speedometer2 tests **********');
+  let workload = settings.workloads[1];
+
+  console.log(`********** Start running ${workload.name} tests **********`);
     const browser = await chromium.launch({
-        headless: false
+        headless: false,
+        executablePath: settings.chrome_path
     });
     const page = await browser.newPage();
-    console.log(`********** Going to URL: ${settings.SPEEDOMETER2_URL} **********`);
-    await page.goto(settings.SPEEDOMETER2_URL);
+    console.log(`********** Going to URL: ${workload.url} **********`);
+    await page.goto(workload.url);
 
     console.log("********** Running Speedometer2 tests... **********");
     await page.click('xpath=//*[@id="home"]/div/button');
@@ -22,33 +25,33 @@ async function runSpeedometer2Test() {
     const score = await scoreElement.evaluate(element => element.textContent);
     console.log('********** Speedometer tests score: **********');
     console.log(`********** ${score}  **********`);
+    scores['Total Score'] = score;
 
+    const subcaseTable = await page.$('#detailed-results > table:nth-child(3)');
+    const subcaseScore = await subcaseTable.evaluate((element) => {
+        let subcase = {};
 
-    if (settings.showDetailedSpeedometer2Score) {
-        const arithMeanElement = await page.$('#results-with-statistics');
-        const arithMeanScore = await arithMeanElement.evaluate(element => element.textContent);
-        scores['Arithmetic Mean:'] = arithMeanScore;
+        for (let i = 1; i < element.rows.length; i++) {
+            let subItem = element.rows[i].cells[0].textContent;
+            let subScore = element.rows[i].cells[1].textContent;
+            subcase[subItem] = subScore;
+        }
+        return subcase;
+    });  
 
-        const geomeanElement = await page.$('#geomean-score');
-        const geomeanScore = await geomeanElement.evaluate(element => element.textContent);
-        scores['Geomean Score:'] = geomeanScore;
-
-        const totalScoreTimeElement = await page.$('#total-score-time');
-        const totalScoreTime = await totalScoreTimeElement.evaluate(element => element.textContent);
-        scores['Total Score Time:'] = totalScoreTime;
-
-        const totalRunningElement = await page.$('#total-running-time');
-        const totalRunningTime = await totalRunningElement.evaluate(element => element.textContent);
-        scores['Total Running Time:'] = totalRunningTime;
-
-        console.log('********** Detailed scores: **********');
-        console.log(scores);
-    }
-
+    Object.assign(scores, subcaseScore);
+    console.log(scores);
     await browser.close();
 
-    return Promise.resolve(scores);
+    return Promise.resolve({
+        date: Date(),
+        scores: scores
+    });
 }
 
 
-module.exports = runSpeedometer2Test;
+if (require.main === module) {
+    runSpeedometer2Test();
+} else {
+    module.exports = runSpeedometer2Test;
+}

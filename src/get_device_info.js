@@ -35,12 +35,12 @@ async function getDeviceInfo() {
 
   // Generate device info object
   const deviceInfo = {
-    "cpu": cpuInfo,
-    "gpu": gpuInfo,
-    "memory": memSize,
-    "hardware": hwInfo,
+    "CPU": cpuInfo,
+    "GPU": gpuInfo,
+    "Memory": memSize,
+    "Hardware": hwInfo,
     "OS": osInfo,
-    "Browser": "Chrome_" + chromeVersion
+    "Browser": "Chrome-" + chromeVersion
   };
   console.log(deviceInfo);
 
