@@ -20,20 +20,20 @@ function sortScores(scoresArray, score, propertyName) {
 /*
 * Run WebXPRT3 page tests for 3 times and get the medium score.
 */
-async function runWebXPRT3() {
-  let workload = settings.workloads[0];
-  let webxprt3Scores = [];
-  for (let i = 0; i < workload.run_times; i++) {
-    const thisScore = await runWebXPRT3();
-    webxprt3Scores.push(thisScore);
+// async function runWebXPRT3Workload() {
+//   let workload = settings.workloads[0];
+//   let webxprt3Scores = [];
+//   for (let i = 0; i < workload.run_times; i++) {
+//     const thisScore = await runWebXPRT3();
+//     webxprt3Scores.push(thisScore);
 
-    await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
-  }
-  sortScores(webxprt3Scores, 'scores', 'Total Score');
-  let middleIndex = Math.floor(workloads.run_times - 1) / 2;
+//     await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
+//   }
+//   sortScores(webxprt3Scores, 'scores', 'Total Score');
+//   let middleIndex = Math.floor(workloads.run_times - 1) / 2;
 
-  return Promise.resolve(webxprt3Scores[middleIndex]);
-}
+//   return Promise.resolve(webxprt3Scores[middleIndex]);
+// }
 
 /*
 * Run Speedometer2 page tests for 3 times and get the medium score.
