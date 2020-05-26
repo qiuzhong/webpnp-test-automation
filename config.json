@@ -18,7 +18,7 @@
 
     "workloads": [
         {
-            "name": "WebXprt3",
+            "name": "WebXPRT3",
             "url": "http://test-server2.sh.intel.com/webxprt3/",
             "run_times": 5
         },

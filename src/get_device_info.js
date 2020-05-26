@@ -42,8 +42,8 @@ async function getDeviceInfo() {
     "OS": osInfo,
     "Browser": "Chrome_" + chromeVersion
   };
-
   console.log(deviceInfo);
+
   return Promise.resolve(deviceInfo);
 };
 
