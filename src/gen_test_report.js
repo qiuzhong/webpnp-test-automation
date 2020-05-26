@@ -48,8 +48,8 @@ function drawResultCompTable(basedResult, comparedResult) {
 		const basedValue = basedResult.test_result[key];
 		const comparedValue = comparedResult.test_result[key];
 		resultTable += "<tr><td>" + key + "</td><td>" + basedValue
-								 + "</td><td>" + comparedValue
-								 + "</td><td>" + Math.round(((basedValue/comparedValue) * 100) * 100) / 100 + "%</td></tr>";
+                 + "</td><td>" + comparedValue + "</td><td>"
+                 + Math.round(((basedValue/comparedValue) * 100) * 100) / 100 + "%</td></tr>";
 	}
 	return resultTable + "</table>";
 }
