@@ -3,8 +3,8 @@
 
 const genDeviceInfo = require('./src/get_device_info.js');
 const runTest = require('./src/run.js');
-const genTestReport = require('./gen_test_report.js');
-// const sendMail = require('./send_mail.js');
+const genTestReport = require('./src/gen_test_report.js');
+const sendMail = require('./src/send_mail.js');
 
 async function main() {
 

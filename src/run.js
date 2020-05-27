@@ -75,9 +75,7 @@ async function genWebXPRT3Results(deviceInfo) {
   console.log(JSON.stringify(jsonData, null, 4));
 
   let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
-  return Promise.resolve({
-    'WebXPRT3': jsonFilename
-  });
+  return Promise.resolve(jsonFilename);
 }
 
 
@@ -100,9 +98,7 @@ async function genSpeedometer2Results(deviceInfo) {
   console.log(JSON.stringify(jsonData, null, 4));
 
   let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
-  return Promise.resolve({
-    'Speedometer2': jsonFilename
-  });
+  return Promise.resolve(jsonFilename);
 }
 
 /*
@@ -124,7 +120,7 @@ async function storeTestData(deviceInfo, workload, jsonData) {
   let absJSONFilename = path.join(testResultsDir, jsonFilename);
 
   await fsPromises.writeFile(absJSONFilename, JSON.stringify(jsonData, null, 4));
-  return Promise.resolve(jsonFilename);
+  return Promise.resolve(absJSONFilename);
 }
 
 module.exports = {
