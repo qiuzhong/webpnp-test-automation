@@ -6,6 +6,7 @@ const runTest = require('./src/run.js');
 const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
+const cron = require('node-cron');
 
 async function main() {
 
