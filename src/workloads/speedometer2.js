@@ -1,8 +1,8 @@
 const settings = require('../../config.json');
 const { chromium } = require('playwright');
 
-async function runSpeedometer2Test() {
-  let workload = settings.workloads[1];
+async function runSpeedometer2Test(workload) {
+  // let workload = settings.workloads[1];
 
   console.log(`********** Start running ${workload.name} tests **********`);
   const browser = await chromium.launch({
@@ -34,10 +34,10 @@ async function runSpeedometer2Test() {
     for (let i = 1; i < element.rows.length; i++) {
       let subItem = element.rows[i].cells[0].textContent;
       let subScore = element.rows[i].cells[1].textContent;
-        subcase[subItem] = subScore;
-      }
+      subcase[subItem] = subScore;
+    }
     return subcase;
-  });  
+  });
 
   Object.assign(scores, subcaseScore);
   console.log(scores);
@@ -51,7 +51,7 @@ async function runSpeedometer2Test() {
 
 
 if (require.main === module) {
-  runSpeedometer2Test();
+  runSpeedometer2Test(settings.workloads[1]);
 } else {
   module.exports = runSpeedometer2Test;
 }

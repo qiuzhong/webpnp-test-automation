@@ -2,8 +2,9 @@ const settings = require('../../config.json');
 const { chromium } = require('playwright');
 
 
-async function runWebXPRT3Test() {
-  let workload = settings.workloads[0];
+async function runWebXPRT3Test(workload) {
+  // let workload = settings.workloads[0];
+
   console.log('********** Start running WebXPRT3 tests **********');
   const browser = await chromium.launch({
     headless: false,
@@ -54,7 +55,7 @@ async function runWebXPRT3Test() {
 
   console.log('********** Detailed scores: **********');
   console.log(scores);
-    
+
   await browser.close();
 
   return Promise.resolve({
@@ -65,7 +66,7 @@ async function runWebXPRT3Test() {
 
 
 if (require.main === module) {
-  runWebXPRT3Test();
+  runWebXPRT3Test(settings.workloads[0]);
 } else {
   module.exports = runWebXPRT3Test;
 }

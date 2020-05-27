@@ -12,7 +12,7 @@ const settings = require('../config.json');
 async function sendMail(subject, html, mailType) {
   let from = "";
   let to = "";
-  if (mailType == "test_report") {
+  if (mailType === "test_report") {
     from = settings.mail_test_report.from;
     to = settings.mail_test_report.to;
   } else {

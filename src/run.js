@@ -18,92 +18,27 @@ function sortScores(scoresArray, score, propertyName) {
 }
 
 /*
-* Run WebXPRT3 page tests for several times and get the medium score.
+* Run a workload several times and sort 
 */
-async function runWebXPRT3Workload() {
-  let workload = settings.workloads[0];
-  let webxprt3Scores = [];
+async function runWorkload(workload, executor) {
+  let scoresArray = [];
+
   for (let i = 0; i < workload.run_times; i++) {
-    const thisScore = await runWebXPRT3();
-    webxprt3Scores.push(thisScore);
-
-    await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
-  }
-  sortScores(webxprt3Scores, 'scores', 'Total Score');
-  let middleIndex = Math.floor(workload.run_times - 1) / 2;
-
-  return Promise.resolve(webxprt3Scores[middleIndex]);
-}
-
-/*
-* Run Speedometer2 page tests for several times and get the medium score.
-*/
-async function runSpeedometer2Workload() {
-
-  let workload = settings.workloads[1];
-  let speedometer2Scores = [];
-  for (let i= 0; i < workload.run_times; i++) {
-    const thisScore = await runSpeedometer2();
-    speedometer2Scores.push(thisScore);
+    let thisScore = await executor(workload);
+    scoresArray.push(thisScore);
 
     await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
   }
 
-  sortScores(speedometer2Scores, 'scores', 'Total Score');
-  let middleIndex = Math.floor(workload.run_times - 1) / 2;
+  sortScores(scoresArray, 'scores', 'Total Score');
+  const middleIndex = Math.floor(workload.run_times - 1) / 2;
 
-  return Promise.resolve(speedometer2Scores[middleIndex]);
-}
-
-
-/*
-* Call runWebXPRT3 workload and generate a JSON file to store the workload results
-* Return an object like {
-*   'WebXPRT3': 'path/to/json/file'  
-* }
-*/
-async function genWebXPRT3Results(deviceInfo) {
-  let workload = settings.workloads[0];
-
-  let results = await runWebXPRT3Workload();
-  let jsonData = {
-    'workload': workload.name,
-    'device_info': deviceInfo,
-    'test_result': results.scores,
-    'execution_date': results.date
-  }
-  console.log(JSON.stringify(jsonData, null, 4));
-
-  let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
-  return Promise.resolve(jsonFilename);
-}
-
-
-/*
-* Call runSpeedometer2 workload and generate a JSON file for send_mail module
-* Return an object {
-*   'Speedometer2': "path/to/json/file",
-* }
-*/
-async function genSpeedometer2Results(deviceInfo) {
-  let workload = settings.workloads[1];
-
-  let results = await runSpeedometer2Workload();
-  let jsonData = {
-    'workload': workload.name,
-    'device_info': deviceInfo,
-    'test_result': results.scores,
-    'execution_date': results.date
-  }
-  console.log(JSON.stringify(jsonData, null, 4));
-
-  let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
-  return Promise.resolve(jsonFilename);
+  return Promise.resolve(scoresArray[middleIndex]);
 }
 
 /*
 *   Generate a JSON file to store this test result
-*   Return: JSON file pathname 
+*   Return: The absolute pathname of the JSON file
 */
 async function storeTestData(deviceInfo, workload, jsonData) {
   let testResultsDir = path.join(process.cwd(), 'results', workload.name);
@@ -123,7 +58,51 @@ async function storeTestData(deviceInfo, workload, jsonData) {
   return Promise.resolve(absJSONFilename);
 }
 
+/*
+* Call a workload and generate the JSON file to store the test results
+* Return: The absolute path name of the JSON file.
+*/
+
+async function genWorkloadResult(deviceInfo, workload, executor) {
+
+  let results = await runWorkload(workload, executor);
+  let jsonData = {
+    'workload': workload.name,
+    'device_info': deviceInfo,
+    'test_result': results.scores,
+    'execution_date': results.date
+  }
+  console.log(JSON.stringify(jsonData, null, 4));
+
+  let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
+  return Promise.resolve(jsonFilename);
+}
+
+/*
+* Run all the workloads defined in ../config.json and 
+* generate the results to the ../results directory.
+* Return: an object like {
+*   'Speedometer2': 'path/to/json/file',
+*   ...
+* }
+*/
+async function genWorkloadsResults(deviceInfo) {
+
+  let results = {};
+  let executors = {
+    'Speedometer2': runSpeedometer2,
+    'WebXPRT3': runWebXPRT3
+  };
+
+  for (const workload of settings.workloads) {
+    let executor = executors[workload.name];
+    results[workload.name] = await genWorkloadResult(deviceInfo, workload, executor);
+  }
+
+  return Promise.resolve(results);
+}
+
+
 module.exports = {
-  genSpeedometer2Results: genSpeedometer2Results,
-  genWebXPRT3Results: genWebXPRT3Results
+  genWorkloadsResults: genWorkloadsResults
 }

@@ -5,39 +5,35 @@ const genDeviceInfo = require('./src/get_device_info.js');
 const runTest = require('./src/run.js');
 const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
+const settings = require('./config.json');
 
 async function main() {
 
-  const deviceInfo = await genDeviceInfo();
-  console.log(deviceInfo);
+  try {
+    const deviceInfo = await genDeviceInfo();
+    console.log(deviceInfo);
 
-  const speedometer2Results = await runTest.genSpeedometer2Results(deviceInfo);
-  const webXPRT3Results = await runTest.genWebXPRT3Results(deviceInfo);
+    const workloadResults = await runTest.genWorkloadsResults(deviceInfo);
+    console.log(JSON.stringify(workloadResults, null, 4));
 
-  console.log(JSON.stringify({
-    'Speedometer2': speedometer2Results,
-    'WebXPRT3': webXPRT3Results
-  }, null, 4));
+    const testReports = await genTestReport(workloadResults);
 
-  // await sendMain({
-  //  'Speedometer2': speedometer2Results,
-  //  'WebXPRT3': webXPRT3Results
-  // });
+    let platform = 'Windows';
+    if (deviceInfo.OS.indexOf('Ubuntu') !== -1) {
+      platform = 'Linux';
+    } 
+    let subject = 'Web PnP weekly test report - ' + platform + ' - ' + deviceInfo.Browser;
+    await sendMail(subject, testReports, 'test_report');
+  } catch (err) {
+    let subject = 'Web PnP weekly test failed';
+    await sendMail(subject, err, 'failure_notice');
+  }
 
-  const testReports = await genTestReport({
-    'Speedometer2': speedometer2Results,
-    'WebXPRT3': webXPRT3Results
-  });
-
-  const subject = "Web PnP weekly test report - " + deviceInfo.OS + " - " + deviceInfo.Browser;
-  await sendMail(subject, testReports, 'test_report');
 }
 
-main();
+// main();
 
-// cron.schedule('0 0 3 * * *', () => {
-//   main().catch(err => () {
-//     sendMail(err);
-//   }
-// });
+cron.schedule(settings.test_cadence, () => {
+  main();
+});
 
