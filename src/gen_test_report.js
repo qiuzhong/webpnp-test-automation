@@ -18,6 +18,8 @@ function drawResultTable(result) {
 
 async function findPreTestResult(resultPath) {
   const dir = await fs.promises.opendir(path.dirname(resultPath));
+  // Gets cpu info from the test report file, e.g. Intel-Core-i5-8350U
+  const currentCPU = path.basename(resultPath).split('_')[1];
   if (dir.length == 0)
     return Promise.reject("Error: no test result found!");
   else if (dir.length == 1)
@@ -25,11 +27,17 @@ async function findPreTestResult(resultPath) {
   else {
     let dirents = [];
     for await (const dirent of dir) {
-      dirents.push(dirent.name);
+      // We only compare same CPU versions
+      if (currentCPU === dirent.name.split('_')[1])
+        dirents.push(dirent.name);
     }
-    const comparedResult = path.join(path.dirname(resultPath), dirents.sort().reverse()[1]);
-    console.log("Found the previus test result: ", comparedResult);
-    return Promise.resolve(comparedResult);
+    if (dirents.length > 1) {
+      const comparedResult = path.join(path.dirname(resultPath), dirents.sort().reverse()[1]);
+      console.log("Found the previus test result: ", comparedResult);
+      return Promise.resolve(comparedResult);
+    } else {
+      return Promise.resolve("none");
+    }
   }
 }
 
@@ -62,7 +70,7 @@ function drawDeviceInfoTable(result) {
 * @param: {Object}, resultPaths, an object reprensents for test result path
 * e.g.
 * {
-* 	"Speedometer2": path.join(__dirname, "../results/Speedometer2/202005261300_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json"),
+*   "Speedometer2": path.join(__dirname, "../results/Speedometer2/202005261300_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json"),
 *	  "WebXPRT3": path.join(__dirname, "../results/WebXPRT3/202005261555_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json")
 * }
 */
