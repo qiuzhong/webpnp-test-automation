@@ -18,25 +18,25 @@ function sortScores(scoresArray, score, propertyName) {
 }
 
 /*
-* Run WebXPRT3 page tests for 3 times and get the medium score.
+* Run WebXPRT3 page tests for several times and get the medium score.
 */
-// async function runWebXPRT3Workload() {
-//   let workload = settings.workloads[0];
-//   let webxprt3Scores = [];
-//   for (let i = 0; i < workload.run_times; i++) {
-//     const thisScore = await runWebXPRT3();
-//     webxprt3Scores.push(thisScore);
+async function runWebXPRT3Workload() {
+  let workload = settings.workloads[0];
+  let webxprt3Scores = [];
+  for (let i = 0; i < workload.run_times; i++) {
+    const thisScore = await runWebXPRT3();
+    webxprt3Scores.push(thisScore);
 
-//     await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
-//   }
-//   sortScores(webxprt3Scores, 'scores', 'Total Score');
-//   let middleIndex = Math.floor(workloads.run_times - 1) / 2;
+    await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
+  }
+  sortScores(webxprt3Scores, 'scores', 'Total Score');
+  let middleIndex = Math.floor(workload.run_times - 1) / 2;
 
-//   return Promise.resolve(webxprt3Scores[middleIndex]);
-// }
+  return Promise.resolve(webxprt3Scores[middleIndex]);
+}
 
 /*
-* Run Speedometer2 page tests for 3 times and get the medium score.
+* Run Speedometer2 page tests for several times and get the medium score.
 */
 async function runSpeedometer2Workload() {
 
@@ -46,7 +46,7 @@ async function runSpeedometer2Workload() {
     const thisScore = await runSpeedometer2();
     speedometer2Scores.push(thisScore);
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    await new Promise(resolve => setTimeout(resolve, 5000)); // sleep for 5s before next time running
   }
 
   sortScores(speedometer2Scores, 'scores', 'Total Score');
@@ -57,9 +57,34 @@ async function runSpeedometer2Workload() {
 
 
 /*
-* Call runSpeedometer2 and generate a JSON file for send_mail module
+* Call runWebXPRT3 workload and generate a JSON file to store the workload results
+* Return an object like {
+*   'WebXPRT3': 'path/to/json/file'  
+* }
+*/
+async function genWebXPRT3Results(deviceInfo) {
+  let workload = settings.workloads[0];
+
+  let results = await runWebXPRT3Workload();
+  let jsonData = {
+    'workload': workload.name,
+    'device_info': deviceInfo,
+    'test_result': results.scores,
+    'execution_date': results.date
+  }
+  console.log(JSON.stringify(jsonData, null, 4));
+
+  let jsonFilename = await storeTestData(deviceInfo, workload, jsonData);
+  return Promise.resolve({
+    'WebXPRT3': jsonFilename
+  });
+}
+
+
+/*
+* Call runSpeedometer2 workload and generate a JSON file for send_mail module
 * Return an object {
-*   'Speedometer2': "file/",
+*   'Speedometer2': "path/to/json/file",
 * }
 */
 async function genSpeedometer2Results(deviceInfo) {
@@ -90,16 +115,19 @@ async function storeTestData(deviceInfo, workload, jsonData) {
     fs.mkdirSync(testResultsDir, {recursive: true});
   }
 
-  let cpu = deviceInfo['CPU'].replace('\u00ae', '').replace('\u2122', '').replace(' ', '-'); // Remove the (R) and (TM) unicode characters
-  let now = new Date();
-  let date = now.toISOString().split('.')[0].replace(/T|-|:/g, '');
+  let cpu = deviceInfo['CPU'].replace('\u00ae', '').replace('\u2122', '').replace(/\s/g, '-'); // Remove the (R) and (TM) unicode characters
+  let date = new Date();
+  let isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+  let jsonDate = isoDate.toISOString().split('.')[0].replace(/T|-|:/g, '');
   let browser = deviceInfo['Browser']
-  let jsonFilename = date + '-' + cpu + '-' + browser + '.json';
+  let jsonFilename = jsonDate + '_' + cpu + '_' + browser + '.json';
+  let absJSONFilename = path.join(testResultsDir, jsonFilename);
 
-  await fsPromises.writeFile(path.join(testResultsDir, jsonFilename), JSON.stringify(jsonData, null, 4));
+  await fsPromises.writeFile(absJSONFilename, JSON.stringify(jsonData, null, 4));
   return Promise.resolve(jsonFilename);
 }
 
 module.exports = {
-  genSpeedometer2Results: genSpeedometer2Results
+  genSpeedometer2Results: genSpeedometer2Results,
+  genWebXPRT3Results: genWebXPRT3Results
 }

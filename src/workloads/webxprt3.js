@@ -59,7 +59,7 @@ async function runWebXPRT3Test() {
 
   return Promise.resolve({
     date: Date(),
-    scores: score
+    scores: scores
   });
 }
 

@@ -3,12 +3,12 @@
     {
       "name": "WebXPRT3",
       "url": "http://test-server2.sh.intel.com/webxprt3/",
-      "run_times": 3
+      "run_times": 1
     },
     {
       "name": "Speedometer2",
       "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
-      "run_times": 3
+      "run_times": 1
     }
   ],
   "chrome_path": "C:\\Users\\qiuzhonx\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
