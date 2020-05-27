@@ -13,11 +13,11 @@
   ],
   "chrome_path": "C:\\Users\\qiuzhonx\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
   "test_cadence": "",
-  "mail": {
+  "mail_test_report": {
     "from": "wanming.lin@intel.com",
-    "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
+    "to": ["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
   },
-  "error_moniter": {
+  "mail_error_report": {
     "from": "wanming.lin@intel.com",
     "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
   }
