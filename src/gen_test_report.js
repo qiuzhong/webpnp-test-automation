@@ -5,11 +5,6 @@ const path = require('path');
 const os = require('os');
 const fsPromises = fs.promises;
 
-// const resultPaths = {
-// 	"Speedometer2": path.join(__dirname, "../results/Speedometer2/202005261300_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json"),
-// 	"WebXPRT3": path.join(__dirname, "../results/WebXPRT3/202005261555_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json")
-// }
-
 function drawResultTable(result) {
   let resultTable = `<table><tr> \
 		<th>${result.workload}</th> \
@@ -62,6 +57,15 @@ function drawDeviceInfoTable(result) {
   return deviceInfoTable + "</table>";
 }
 
+/*
+* Generate test report as html
+* @param: {Object}, resultPaths, an object reprensents for test result path
+* e.g.
+* {
+* 	"Speedometer2": path.join(__dirname, "../results/Speedometer2/202005261300_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json"),
+*	  "WebXPRT3": path.join(__dirname, "../results/WebXPRT3/202005261555_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json")
+* }
+*/
 async function genTestReport(resultPaths) {
   console.log("********** Generate test report as html **********");
   // Get test result table

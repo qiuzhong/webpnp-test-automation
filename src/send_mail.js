@@ -1,14 +1,24 @@
 "use strict";
 
 const nodemailer = require("nodemailer");
+const settings = require('../config.json');
 
-async function sendMail(deviceInfo) {
-  const htmlStyle = "<style>"
-    + "table {border-collapse: collapse;}"
-    + "table, td, th {border: 1px solid black;}"
-    + "</style>";
-
-  const mailContent = htmlStyle + deviceInfo;
+/*
+* Send mail to corresponding mail list
+* @param {String}, subject, represents mail's subject
+* @param {String}, html, uses html document to repensent mail content
+* @param {String}, mailType, one of ["test_report", "error_notice"]
+*/
+async function sendMail(subject, html, mailType) {
+  let from = "";
+  let to = "";
+  if (mailType == "test_report") {
+    from = settings.mail_test_report.from;
+    to = settings.mail_test_report.to;
+  } else {
+    from = settings.mail_error_report.from;
+    to = settings.mail_error_report.to;
+  }
 
   // Create reusable transporter object
   let transporter = nodemailer.createTransport({
@@ -16,7 +26,7 @@ async function sendMail(deviceInfo) {
     port: 25,
     secure: false,
     auth: {
-      user: 'wanming.lin@intel.com',
+      user: "",
       pass: "",
     },
   });
@@ -31,11 +41,10 @@ async function sendMail(deviceInfo) {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Wanming Lin" <wanming.lin@intel.com>', // sender address
-    to: "wanming.lin@intel.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: mailContent, // html body
+    from: from, // sender address
+    to: to, // list of receivers
+    subject: subject, // Subject line
+    html: html, // html body
   });
   return Promise.resolve();
 }
