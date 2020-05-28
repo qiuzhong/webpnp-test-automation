@@ -211,7 +211,8 @@ async function genTestReport(resultPaths) {
 	  th {background-color: #4CAF50; color: #ffffff; font-weight: normal;} \
 		</style>";
   // Composite html body
-  const html = htmlStyle + "<b>Summary:</b>" + summaryTable + "<b>Details:</b>" + resultTables + "<br><br>" + deviceInfoTable;
+  const html = htmlStyle + "<b>Summary:</b>" + summaryTable + "<b>Details:</b>"
+               + resultTables + "<br><br>" + "<b>Device Info:</b>" + deviceInfoTable;
   console.log("**Generated html: ", html);
   return Promise.resolve(html);
 }

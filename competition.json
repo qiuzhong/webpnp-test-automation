@@ -1,8 +1,4 @@
 {
-  "Intel-Core-i5-8350U": {
-    "arch": "KBL",
-    "competition": "AMD-Ryzen-3900X1"
-  },
   "Intel-Core-i5-8250U":{
     "arch": "KBL",
     "competition": "AMD-Ryzen-5-2500U"
