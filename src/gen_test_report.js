@@ -139,7 +139,7 @@ function drawCompareResult(basedValue, comparedValue) {
   if (result >= 100)
     resultStyle = "#4CAF50";
   else if (result < 100 && result > 95)
-    resultStyle = "yellow";
+    resultStyle = "#D1B100";
   else
     resultStyle = "red";
   return `<td style="color:${resultStyle}">${result}%</td>`;
