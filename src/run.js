@@ -1,5 +1,6 @@
 const fs = require('fs');
-const fsPromises = require('fs').promises;
+const os = require('os');
+const fsPromises = fs.promises;
 const path = require('path');
 const runSpeedometer2 = require('./workloads/speedometer2.js');
 const runWebXPRT3 = require('./workloads/webxprt3.js');
@@ -7,7 +8,15 @@ const settings = require('../config.json');
 const Client = require('ssh2-sftp-client');
 
 
+function getPlatformName() {
+  let platform = os.platform();
 
+  if (platform === 'win32') {
+    return 'Windows';
+  } else {
+    return 'Linux';
+  }
+}
 /*
 * Sort the score object array by specific key and get the medium one.
 */
@@ -43,7 +52,7 @@ async function runWorkload(workload, executor) {
 *   Return: The absolute pathname of the JSON file
 */
 async function storeTestData(deviceInfo, workload, jsonData) {
-  let testResultsDir = path.join(process.cwd(), 'results', workload.name);
+  let testResultsDir = path.join(process.cwd(), 'results', getPlatformName(), workload.name);
   if (!fs.existsSync(testResultsDir)) {
     fs.mkdirSync(testResultsDir, {recursive: true});
   }
@@ -86,7 +95,7 @@ async function genWorkloadResult(deviceInfo, workload, executor) {
 * Sync local test results directory with the one in remote server.
 */
 async function syncRemoteDirectory(workload, action) {
-  let testResultsDir = path.join(process.cwd(), 'results', workload.name);
+  let testResultsDir = path.join(process.cwd(), 'results', getPlatformName(), workload.name);
   if (!fs.existsSync(testResultsDir)) {
     fs.mkdirSync(testResultsDir, {recursive: true});
   }
@@ -98,13 +107,14 @@ async function syncRemoteDirectory(workload, action) {
     password: settings.result_server.password
   };
 
-  let remoteResultDir = `/home/${settings.result_server.username}/webpnp/results/${workload.name}`;
+  let currentPlatform = getPlatformName();
+  let remoteResultDir = `/home/${settings.result_server.username}/webpnp/results/${currentPlatform}/${workload.name}`;
   let sftp = new Client();
   try {
     await sftp.connect(serverConfig);
     let remoteResultDirExist = await sftp.exists(remoteResultDir);
     if (!remoteResultDirExist) {
-      await sftp.mkdir(remoteResultDir);      
+      await sftp.mkdir(remoteResultDir, true);
     }
 
     let remoteResultFiles = await sftp.list(remoteResultDir);
@@ -164,5 +174,6 @@ async function genWorkloadsResults(deviceInfo) {
 
 
 module.exports = {
+  getPlatformName: getPlatformName,
   genWorkloadsResults: genWorkloadsResults
 }

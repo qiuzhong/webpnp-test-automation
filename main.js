@@ -8,8 +8,11 @@ const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
 const cron = require('node-cron');
 const moment = require('moment');
+const os = require('os');
 
-let cpuModel = require('os').cpus()[0].model;
+
+const cpuModel = os.cpus()[0].model;
+const platform = runTest.getPlatformName();
 
 async function main() {
 
@@ -25,18 +28,13 @@ async function main() {
 
     const testReports = await genTestReport(workloadResults);
 
-    let platform = 'Windows';
-    if (deviceInfo.OS.includes('Ubuntu')) {
-      platform = 'Linux';
-    } 
-    let subject = '[W' + weekAndDay + '] Web PnP weekly test report - ' + platform + ' - ' + deviceInfo.Browser;
+    let subject = '[W' + weekAndDay + '] Web PnP weekly automation test report - ' + platform + ' - ' + deviceInfo.Browser;
     console.log(subject);
     await sendMail(subject, testReports, 'test_report');
   } catch (err) {
-    let subject = '[W' + weekAndDay + '] Web PnP weekly test failed';
+    let subject = '[W' + weekAndDay + '] Web PnP weekly automation test failed on: ' + platform + '-' + cpuModel;
     await sendMail(subject, err, 'failure_notice');
   }
-
 }
 
 
