@@ -18,8 +18,21 @@ async function getOtherInfo() {
 
   // Get Chrome version
   await page.goto('chrome://version');
-  const versionElement = await page.$('#version > span:nth-child(1)');
-  const chromeVersion = await versionElement.evaluate(element => element.textContent);
+  const versionElement = await page.$('#version');
+  const versionInfo = await versionElement.evaluate(element => element.innerText);
+  console.log(versionInfo);
+
+  let chromeChannel = '';
+  if (versionInfo.includes('Stable')) {
+    chromeChannel = 'Stable';
+  } else if (versionInfo.includes('canary')) {
+    chromeChannel = 'Canary';
+  } else if (versionInfo.includes('Developer')) {
+    chromeChannel = 'Dev';
+  } else {
+    chromeChannel = 'Beta';
+  }
+  const chromeVersion = chromeChannel + '-' + versionInfo.split(' ')[0];
   console.log('********** Chrome version **********');
   console.log(chromeVersion);
   

@@ -50,8 +50,4 @@ async function runSpeedometer2Test(workload) {
 }
 
 
-if (require.main === module) {
-  runSpeedometer2Test(settings.workloads[1]);
-} else {
-  module.exports = runSpeedometer2Test;
-}
+module.exports = runSpeedometer2Test;

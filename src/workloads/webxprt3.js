@@ -65,10 +65,4 @@ async function runWebXPRT3Test(workload) {
 }
 
 
-if (require.main === module) {
-  runWebXPRT3Test(settings.workloads[0]);
-} else {
-  module.exports = runWebXPRT3Test;
-}
-
-
+module.exports = runWebXPRT3Test;
