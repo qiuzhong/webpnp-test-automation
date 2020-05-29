@@ -1,7 +1,7 @@
 "use strict";
 
 const settings = require('../config.json');
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-chromium');
 
 /*
 * Get information of gpu driver version and browser version

@@ -17,6 +17,7 @@ function getPlatformName() {
     return 'Linux';
   }
 }
+
 /*
 * Sort the score object array by specific key and get the medium one.
 */

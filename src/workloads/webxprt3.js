@@ -1,5 +1,5 @@
 const settings = require('../../config.json');
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-chromium');
 
 
 async function runWebXPRT3Test(workload) {
