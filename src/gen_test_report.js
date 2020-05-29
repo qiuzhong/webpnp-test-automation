@@ -49,18 +49,19 @@ function drawResultTable(basedResult, preResult, competitionResult, intelArch) {
     if (preResult !== "") {
       preValue = preResult.test_result[key];
       preCol = `<td>${preValue}</td>`;
-      vsPreCol =  drawCompareResult(preValue, basedValue);
-      if (key == "Total Score") {
-        vsPreCol = drawCompareResult(basedValue, preValue);
+      vsPreCol = drawCompareResult(basedValue, preValue);
+      if (basedResult.workload === "WebXPRT3" && key !== "Total Score") {
+        vsPreCol =  drawCompareResult(preValue, basedValue);
       }
     }
     // Get info from competitionResult
     let competitionCol = vsPreCol + "</tr>", vsCompetitionCol = "", competitionValue = "";
     if (competitionResult != "") {
       competitionValue = competitionResult.test_result[key];
-      vsCompetitionCol = drawCompareResult(competitionValue, basedValue);
-      if (key == "Total Score")
-        vsCompetitionCol = drawCompareResult(basedValue, competitionValue);
+      vsCompetitionCol = drawCompareResult(basedValue, competitionValue);
+      if (basedResult.workload === "WebXPRT3" && key !== "Total Score") {
+        vsCompetitionCol =  drawCompareResult(competitionValue, basedValue);
+      }
       competitionCol = `<td>${competitionValue}</td>${vsPreCol + vsCompetitionCol}</tr>`;
     }
     // Draw summaryCol and resultTable
