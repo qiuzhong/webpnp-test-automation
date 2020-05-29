@@ -33,7 +33,7 @@ async function runWorkload(workload, executor) {
   }
 
   sortScores(scoresArray, 'scores', 'Total Score');
-  const middleIndex = Math.floor(workload.run_times - 1) / 2;
+  const middleIndex = Math.round((workload.run_times - 1) / 2);
 
   return Promise.resolve(scoresArray[middleIndex]);
 }
