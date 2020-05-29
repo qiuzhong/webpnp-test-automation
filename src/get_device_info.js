@@ -31,7 +31,12 @@ async function getDeviceInfo() {
 
   // Get OS info
   const osData = await si.osInfo();
-  const osInfo = osData.distro + " (" + osData.release + ")";
+  let platform = "";
+  if (osData.distro.includes("Windows 10"))
+    platform = "Windows 10";
+  else
+    platform = osData.distro;
+  const osInfo = platform + " (" + osData.release + ")";
 
   // Generate device info object
   const deviceInfo = {
