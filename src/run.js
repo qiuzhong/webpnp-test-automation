@@ -39,7 +39,7 @@ async function runWorkload(workload, executor) {
     let thisScore = await executor(workload);
     scoresArray.push(thisScore);
 
-    await new Promise(resolve => setTimeout(resolve, settings.sleep_interval * 1000)); // sleep for a while before next time running
+    await new Promise(resolve => setTimeout(resolve, workload.sleep_interval * 1000)); // sleep for a while before next time running
   }
 
   sortScores(scoresArray, 'scores', 'Total Score');
