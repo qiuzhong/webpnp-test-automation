@@ -23,10 +23,8 @@ function getPlatformName() {
 */
 function sortScores(scoresArray, score, propertyName) {
   scoresArray.sort((a, b) => {
-    Number.parseFloat(a[score][propertyName]) - Number.parseFloat(b[score][propertyName]);
+    return Number.parseFloat(a[score][propertyName]) - Number.parseFloat(b[score][propertyName]);
   });
-
-  return scoresArray;
 }
 
 /*
