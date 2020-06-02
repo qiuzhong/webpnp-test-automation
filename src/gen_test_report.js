@@ -12,7 +12,7 @@ const fsPromises = fs.promises;
 */
 function drawTableHeader(type, basedResult, preResult, competitionResult, intelArch) {
   let preCpu = "", preOs = "", preBrowser = "", vsPre = "";
-  let comCpu = "", comOs = "</tr>", comBrowser = "</tr>", vsCom = "</tr>";
+  let comCpu = "", comOs = "", comBrowser = "", vsCom = "</tr>";
   let firstCol = "Workloads";
   let extendCpuInfo = intelArch;
   if (type !== "summary")
@@ -23,19 +23,65 @@ function drawTableHeader(type, basedResult, preResult, competitionResult, intelA
     preCpu = `<th>${preResult.device_info.CPU + extendCpuInfo}</th>`;
     preOs = `<th>${preResult.device_info.OS}</th>`;
     preBrowser = `<th>${preResult.device_info.Browser}</th>`;
-    vsPre = "<th rowspan='3'>vs. previous</th>";
+    vsPre = `<th rowspan='3'>Chrome vs. previous${extendCpuInfo}</th>`;
   }
   if (competitionResult !== "") {
     comCpu = `<th>${competitionResult.device_info.CPU}</th>`;
-    comOs = `<th>${competitionResult.device_info.OS}</th></tr>`;
-    comBrowser = `<th>${competitionResult.device_info.Browser}</th></tr>`;
+    comOs = `<th>${competitionResult.device_info.OS}</th>`;
+    comBrowser = `<th>${competitionResult.device_info.Browser}</th>`;
     vsCom = `<th rowspan='3'>${intelArch} vs. AMD</th></tr>`;
   }
   const tableHeader = `<tr><th rowspan="3">${firstCol}</th>\
-                     <th>${basedResult.device_info.CPU + extendCpuInfo}</th>${preCpu + comCpu + vsPre + vsCom}\
-                 <tr><th>${basedResult.device_info.OS}</th>${preOs + comOs}\
-                 <tr><th>${basedResult.device_info.Browser}</th>${preBrowser + comBrowser}`;
+                     ${preCpu + comCpu}<th>${basedResult.device_info.CPU + extendCpuInfo}</th>${vsPre + vsCom}\
+                 <tr>${preOs + comOs}<th>${basedResult.device_info.OS}</th></tr>\
+                 <tr>${preBrowser + comBrowser}<th>${basedResult.device_info.Browser}</th></tr>`;
   return tableHeader;
+}
+
+function drawRoundsHeader(basedResult, competitionResult, intelArch) {
+  let extendCpuInfo = intelArch;
+  let comCol = "</tr>";
+  let basedRoundCol = "<tr>", comRoundCol = "";
+  const basedResultLength = basedResult.test_rounds.length;
+  for (let i = 0; i < basedResultLength; i ++) {
+    basedRoundCol += `<th>Round ${i + 1}</th>`;
+  }
+  if (intelArch !== "")
+    extendCpuInfo = ` (${intelArch})`;
+  let header = `<tr><th rowspan='2'>Workloads</th><th colspan='${basedResultLength}'>\
+    ${basedResult.device_info.CPU + extendCpuInfo + " " + basedResult.device_info.Browser}</th>`;
+  if(competitionResult !== "") {
+    const comResultLength = competitionResult.test_rounds.length;
+    for (let i = 0; i < comResultLength; i ++) {
+      comRoundCol += `<th>Round ${i + 1}</th>`;
+    }
+    comCol = `<th colspan='${comResultLength}'>\
+      ${competitionResult.device_info.CPU + " " + competitionResult.device_info.Browser}</th></tr>`;
+  }
+  header = header + comCol + basedRoundCol + comRoundCol + "</tr>";
+  return header;
+}
+
+function drawRoundsResult(basedResult, competitionResult) {
+  let basedResultCol = `<tr><td>${basedResult.workload}</td>`;
+  let comResultCol = "";
+  const selectedStyle = "style='background-color: #4CAF50;'";
+  for ( let i = 0; i < basedResult.test_rounds.length; i++ ) {
+    if (i === basedResult.selected_round)
+      basedResultCol += `<td ${selectedStyle}>${basedResult.test_rounds[i].scores["Total Score"]}</td>`;
+    else
+      basedResultCol += `<td>${basedResult.test_rounds[i].scores["Total Score"]}</td>`;
+  }
+  if (competitionResult !== "") {
+    for ( let i = 0; i < competitionResult.test_rounds.length; i++ ) {
+      if (i === competitionResult.selected_round)
+        comResultCol += `<td ${selectedStyle}>${competitionResult.test_rounds[i].scores["Total Score"]}</td>`;
+      else
+        comResultCol += `<td>${competitionResult.test_rounds[i].scores["Total Score"]}</td>`;
+    }
+  }
+  const resultCol = basedResultCol + comResultCol + "</tr>";
+  return resultCol;
 }
 
 function drawResultTable(basedResult, preResult, competitionResult, intelArch) {
@@ -55,19 +101,19 @@ function drawResultTable(basedResult, preResult, competitionResult, intelArch) {
       }
     }
     // Get info from competitionResult
-    let competitionCol = vsPreCol + "</tr>", vsCompetitionCol = "", competitionValue = "";
-    if (competitionResult != "") {
+    let competitionCol = "", vsCompetitionCol = "", competitionValue = "";
+    if (competitionResult !== "") {
       competitionValue = competitionResult.test_result[key];
       vsCompetitionCol = drawCompareResult(basedValue, competitionValue);
       if (basedResult.workload === "WebXPRT3" && key !== "Total Score") {
         vsCompetitionCol =  drawCompareResult(competitionValue, basedValue);
       }
-      competitionCol = `<td>${competitionValue}</td>${vsPreCol + vsCompetitionCol}</tr>`;
+      competitionCol = `<td>${competitionValue}</td>`;
     }
     // Draw summaryCol and resultTable
     if (key == "Total Score")
-      summaryCol = `<tr><td>${basedResult.workload}</td><td>${basedValue}</td>${preCol + competitionCol}`;
-    resultTable += `<tr><td>${key}</td><td>${basedValue}</td>${preCol + competitionCol}`;
+      summaryCol = `<tr><td>${basedResult.workload}</td>${preCol + competitionCol}<td>${basedValue}</td>${vsPreCol + vsCompetitionCol}</tr>`;
+    resultTable += `<tr><td>${key}</td>${preCol + competitionCol}<td>${basedValue}</td>${vsPreCol + vsCompetitionCol}</tr>`;
   }
 
   return {"all":`${resultTable}</table>`, "summaryCol": summaryCol};
@@ -148,7 +194,7 @@ function drawCompareResult(basedValue, comparedValue) {
 
 function drawDeviceInfoTable(result) {
   let deviceInfoTable = "<table>";
-  for (const key of Object.keys(result.device_info)) {
+  for (const key in result.device_info) {
     deviceInfoTable += `<tr><td>${key}</td><td>${result.device_info[key]}</td></tr>`;
   }
   return `${deviceInfoTable}</table>`;
@@ -168,10 +214,11 @@ async function genTestReport(resultPaths) {
   // Get test result table
   let resultTables = "";
   let summaryTable = "<table>";
+  let roundsTable = "<table>";
   let basedResult;
   let intelArch = "";
   let flag = false;
-  for (const key of Object.keys(resultPaths)) {
+  for (const key in resultPaths) {
     const resultPath = resultPaths[key];
 
     // Get basedResult
@@ -194,14 +241,18 @@ async function genTestReport(resultPaths) {
       const basedCpuInfo = path.basename(resultPath).split('_')[1];
       intelArch = competitionList[basedCpuInfo].arch;
     }
-    if(!flag)
+    if(!flag) {
       summaryTable += drawTableHeader("summary", basedResult, preResult, competitionResult, intelArch);
+      roundsTable += drawRoundsHeader(basedResult, competitionResult, intelArch);
+    }
     const resultTable = drawResultTable(basedResult, preResult, competitionResult, intelArch);
     resultTables += `${resultTable.all}<br>`;
     summaryTable += resultTable.summaryCol;
+    roundsTable += drawRoundsResult(basedResult, competitionResult);
     flag = true;
   }
-  summaryTable += "</table><br><br>";
+  summaryTable += "</table><br>";
+  roundsTable += "</table><br><br>";
   // Get device info table
   const deviceInfoTable = drawDeviceInfoTable(basedResult);
   // Define html style
@@ -209,10 +260,10 @@ async function genTestReport(resultPaths) {
 		* {font-family: Calibri (Body);} \
 	  table {border-collapse: collapse;} \
 	  table, td, th {border: 1px solid black;} \
-	  th {background-color: #4CAF50; color: #ffffff; font-weight: normal;} \
+	  th {background-color: #0071c5; color: #ffffff; font-weight: normal;} \
 		</style>";
   // Composite html body
-  const html = htmlStyle + "<b>Summary:</b>" + summaryTable + "<b>Details:</b>"
+  const html = htmlStyle + "<b>Summary:</b>" + summaryTable + roundsTable + "<b>Details:</b>"
                + resultTables + "<br><br>" + "<b>Device Info:</b>" + deviceInfoTable;
   console.log("**Generated html: ", html);
   return Promise.resolve(html);
