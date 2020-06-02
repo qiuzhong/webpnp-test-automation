@@ -31,10 +31,12 @@ function sortScores(scoresArray, score, propertyName) {
 * Run a workload several times and sort 
 */
 async function runWorkload(workload, executor) {
+  let originScoresArray = [];
   let scoresArray = [];
 
   for (let i = 0; i < workload.run_times; i++) {
     let thisScore = await executor(workload);
+    originScoresArray.push(thisScore);
     scoresArray.push(thisScore);
 
     await new Promise(resolve => setTimeout(resolve, workload.sleep_interval * 1000)); // sleep for a while before next time running
@@ -43,7 +45,17 @@ async function runWorkload(workload, executor) {
   sortScores(scoresArray, 'scores', 'Total Score');
   const middleIndex = Math.round((workload.run_times - 1) / 2);
 
-  return Promise.resolve(scoresArray[middleIndex]);
+  let selectedRound = -1;
+  for (let i = 0; i < originScoresArray.length; i++) {
+    if (scoresArray[middleIndex] === originScoresArray[i])
+      selectedRound = i;
+  }
+
+  return Promise.resolve({
+    'middle_score': scoresArray[middleIndex],
+    'selected_round': selectedRound,
+    'detailed_scores': originScoresArray
+  });
 }
 
 /*
@@ -80,8 +92,10 @@ async function genWorkloadResult(deviceInfo, workload, executor) {
   let jsonData = {
     'workload': workload.name,
     'device_info': deviceInfo,
-    'test_result': results.scores,
-    'execution_date': results.date
+    'test_result': results.middle_score.scores,
+    'selected_round': results.selected_round,
+    'test_rounds': results.detailed_scores,
+    'execution_date': results.middle_score.date
   }
   console.log(JSON.stringify(jsonData, null, 4));
 

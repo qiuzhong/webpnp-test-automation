@@ -16,8 +16,8 @@ async function sendMail(subject, html, mailType) {
     from = settings.mail_test_report.from;
     to = settings.mail_test_report.to;
   } else {
-    from = settings.mail_error_report.from;
-    to = settings.mail_error_report.to;
+    from = settings.mail_dev_notice.from;
+    to = settings.mail_dev_notice.to;
   }
 
   // Create reusable transporter object

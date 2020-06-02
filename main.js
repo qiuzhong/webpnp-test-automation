@@ -3,6 +3,7 @@
 
 const genDeviceInfo = require('./src/get_device_info.js');
 const runTest = require('./src/run.js');
+const updateBrowser = require('./src/update_browser.js');
 const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
@@ -19,22 +20,39 @@ async function main() {
   let now = moment();
   const weekAndDay = now.week() + '.' + now.day();
 
+  let deviceInfo = {};
   try {
-    const deviceInfo = await genDeviceInfo();
+    deviceInfo = await genDeviceInfo();
     console.log(deviceInfo);
+
+    // in dev mode, check browser version will be skipped.
+    if (!settings.dev_mode) {
+      await updateBrowser.checkBrowserVersion(deviceInfo);
+    }
 
     const workloadResults = await runTest.genWorkloadsResults(deviceInfo);
     console.log(JSON.stringify(workloadResults, null, 4));
-
     const testReports = await genTestReport(workloadResults);
 
     let subject = '[W' + weekAndDay + '] Web PnP weekly automation test report - ' + platform + ' - ' + deviceInfo.Browser;
     console.log(subject);
-    await sendMail(subject, testReports, 'test_report');
+    // await sendMail(subject, testReports, 'test_report');
   } catch (err) {
-    let subject = '[W' + weekAndDay + '] Web PnP weekly automation test failed on: ' + platform + '-' + cpuModel;
-    await sendMail(subject, err, 'failure_notice');
+
+    console.log(err);
+    let subject = '[W' + weekAndDay + ']';
+    if (! settings.dev_mode && err.message.includes('No new browser update')) {
+      subject += 'Web PnP weekly automation test cancelled on ' + platform + ' as no browser update';
+    } else { 
+      subject += 'Web PnP weekly automation test failed on ' + platform + '-' + cpuModel;
+    }
+
+    console.log(subject);
+    // await sendMail(subject, err, 'failure_notice');
   }
+
+  // Update the browser version in config.json if necessary
+  await updateBrowser.updateConfig(deviceInfo, settings);
 }
 
 
