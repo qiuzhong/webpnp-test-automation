@@ -7,7 +7,7 @@ const settings = require('../config.json');
 * Send mail to corresponding mail list
 * @param {String}, subject, represents mail's subject
 * @param {String}, html, uses html document to repensent mail content
-* @param {String}, mailType, one of ["test_report", "error_notice"]
+* @param {String}, mailType, one of ["test_report", "dev_notice"]
 */
 async function sendMail(subject, html, mailType) {
   let from = "";

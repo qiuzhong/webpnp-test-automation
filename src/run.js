@@ -68,7 +68,7 @@ async function storeTestData(deviceInfo, workload, jsonData) {
     fs.mkdirSync(testResultsDir, {recursive: true});
   }
 
-  let cpu = deviceInfo['CPU'].replace('\u00ae', '').replace('\u2122', '').replace(/\s/g, '-'); // Remove the (R) and (TM) unicode characters
+  let cpu = deviceInfo['CPU']['info'].replace(/\s/g, '-');
   let date = new Date();
   let isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
   let jsonDate = isoDate.toISOString().split('.')[0].replace(/T|-|:/g, '');

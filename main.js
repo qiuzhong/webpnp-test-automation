@@ -32,11 +32,16 @@ async function main() {
 
     const workloadResults = await runTest.genWorkloadsResults(deviceInfo);
     console.log(JSON.stringify(workloadResults, null, 4));
+
+    let mailType = 'test_report';
+    if (cpuModel.includes('AMD'))
+      mailType = 'dev_notice'; // If the test is on AMD platform, then send dev team.
+
     const testReports = await genTestReport(workloadResults);
 
     let subject = '[W' + weekAndDay + '] Web PnP weekly automation test report - ' + platform + ' - ' + deviceInfo.Browser;
     console.log(subject);
-    await sendMail(subject, testReports, 'test_report');
+    await sendMail(subject, testReports, mailType);
   } catch (err) {
 
     console.log(err);
