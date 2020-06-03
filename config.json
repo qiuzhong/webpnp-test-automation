@@ -14,10 +14,9 @@
     }
   ],
   "chrome_path": "C:\\Users\\qiuzhonx\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
-  "update_browser_sched": "0 0 23 * * *",
-  "update_chrome_timeout": 300,
-  "intel_test_cadence": "0 0 3 * * Sat",
-  "amd_test_cadence": "0 0 0 * * Sat",
+  "update_browser_sched": "0 0 0 * * Sat",
+  "intel_test_cadence": "0 0 4 * * Sat",
+  "amd_test_cadence": "0 0 1 * * Sat",
   "enable_cron": true,
   "mail_test_report": {
     "from": "wanming.lin@intel.com",

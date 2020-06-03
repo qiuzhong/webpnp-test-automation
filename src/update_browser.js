@@ -23,9 +23,9 @@ async function updateChrome() {
       console.log(lastVersion);
 
       console.log('********** Upgrading the Chromium browser **********');
-      await page.goto('chrome://settings/help');  
+      await page.goto('chrome://settings/help');
 
-      await new Promise(resolve => setTimeout(resolve, settings.update_chrome_timeout * 1000));
+      await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000));
       await browser.close();
 
       console.log('********** Getting chrome version after update **********');
