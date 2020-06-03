@@ -20,7 +20,7 @@ async function getDeviceInfo() {
 
   // Get CPU info
   const cpuData = await si.cpu();
-  let cpuArch = "", cpuInfo = [];
+  let cpuArch = "";
   let cpuBrand = cpuData.brand;
   const cpuManufacturer = cpuData.manufacturer;
   // Intel CPU
@@ -32,13 +32,19 @@ async function getDeviceInfo() {
       return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in competition.json`);
   // AMD CPU
   } else if (cpuManufacturer.includes("AMD")) {
-    // Trim the brand name, e.g. AMD Ryzen 7 4700U with Radeon Graphics ->AMD Ryzen 7 4700U
-    cpuBrand = cpuBrand.substring(0, s.indexOf(" with"));
+    // Trim the brand name, e.g. Ryzen 7 4700U with Radeon Graphics -> Ryzen 7 4700U
+    cpuBrand = cpuBrand.split(" ").slice(0, 3).join(" ");
   } else {
     // Reject other CPU
     return Promise.reject(`Error: unknown CPU brand: ${cpuBrand}`);
   }
-  let info = cpuArch === "" ? cpuBrand : cpuArch + " " + cpuBrand;
+  let info = "";
+  // AMD's CPU info
+  if (cpuArch === "")
+    info = cpuManufacturer + " " + cpuBrand;
+  //Intel's CPU info
+  else
+    info = cpuArch + " " + cpuBrand;
   const cpuInfo = { "info": info, "arch": cpuArch, "brand": cpuBrand };
 
   // Get memory info
