@@ -36,7 +36,7 @@ async function main() {
 
     let subject = '[W' + weekAndDay + '] Web PnP weekly automation test report - ' + platform + ' - ' + deviceInfo.Browser;
     console.log(subject);
-    // await sendMail(subject, testReports, 'test_report');
+    await sendMail(subject, testReports, 'test_report');
   } catch (err) {
 
     console.log(err);
@@ -48,7 +48,7 @@ async function main() {
     }
 
     console.log(subject);
-    // await sendMail(subject, err, 'failure_notice');
+    await sendMail(subject, err, 'failure_notice');
   }
 
   // Update the browser version in config.json if necessary
@@ -57,6 +57,9 @@ async function main() {
 
 
 if (settings.enable_cron) {
+  cron.schedule(settings.update_browser_sched, () => {
+    updateBrowser.updateChrome();
+  });
   if (cpuModel.includes('Intel')) {
     cron.schedule(settings.intel_test_cadence, () => {
       main();

@@ -1,6 +1,5 @@
 {
   "workloads": [
-
     {
       "name": "Speedometer2",
       "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/Speedometer2-226694-jstc/",
@@ -15,14 +14,16 @@
     }
   ],
   "chrome_path": "C:\\Users\\qiuzhonx\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
+  "update_browser_sched": "0 0 23 * * *",
+  "update_chrome_timeout": 300,
   "intel_test_cadence": "0 0 3 * * Sat",
   "amd_test_cadence": "0 0 0 * * Sat",
-  "enable_cron": true, 
+  "enable_cron": true,
   "mail_test_report": {
     "from": "wanming.lin@intel.com",
     "to": ["chromiumopt@intel.com", "shiyu.zhang@intel.com", "qi.zhang@intel.com", "jonathan.ding@intel.com", "canx.cao@intel.com", "zhongx.qiu@intel.com"]
   },
-  "mail_error_report": {
+  "mail_dev_notice": {
     "from": "wanming.lin@intel.com",
     "to":["wanming.lin@intel.com", "zhongx.qiu@intel.com"]
   },
@@ -30,5 +31,6 @@
     "host": "10.239.115.92",
     "username": "banana",
     "password": "000"
-  }
+  },
+  "dev_mode": false
 }
