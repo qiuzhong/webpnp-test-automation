@@ -2,6 +2,7 @@
 
 const si = require('systeminformation');
 const getOtherInfo = require('./get_other_info.js');
+const competition = require('../competition.json');
 
 /*
 * Get information of device info
@@ -14,12 +15,31 @@ async function getDeviceInfo() {
   console.log('********** Get all device info **********');
   // Get GPU info
   const gpuData = await si.graphics();
-  const gpuModel = gpuData.controllers[0].model;
-  const gpuInfo = gpuModel + " (" + gpuDriverVersion + ")";
+  const gpuModel = gpuData.controllers.slice(-1)[0].model;
+  const gpuName = gpuModel.replace("(TM)", "").replace("(R)", "");
 
   // Get CPU info
   const cpuData = await si.cpu();
-  const cpuInfo = cpuData.manufacturer + " " + cpuData.brand;
+  let cpuArch = "", cpuInfo = [];
+  let cpuBrand = cpuData.brand;
+  const cpuManufacturer = cpuData.manufacturer;
+  // Intel CPU
+  if (cpuManufacturer.includes("Intel")) {
+    const IntelCpuList = Object.keys(competition);
+    if (IntelCpuList.includes(cpuBrand))
+      cpuArch = IntelCpuList[cpuBrand].arch;
+    else
+      return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in competition.json`);
+  // AMD CPU
+  } else if (cpuManufacturer.includes("AMD")) {
+    // Trim the brand name, e.g. AMD Ryzen 7 4700U with Radeon Graphics ->AMD Ryzen 7 4700U
+    cpuBrand = cpuBrand.substring(0, s.indexOf(" with"));
+  } else {
+    // Reject other CPU
+    return Promise.reject(`Error: unknown CPU brand: ${cpuBrand}`);
+  }
+  let info = cpuArch === "" ? cpuBrand : cpuArch + " " + cpuBrand;
+  const cpuInfo = { "info": info, "arch": cpuArch, "brand": cpuBrand };
 
   // Get memory info
   const memData = await si.mem();
@@ -36,15 +56,16 @@ async function getDeviceInfo() {
     platform = "Windows 10";
   else
     platform = osData.distro;
-  const osInfo = platform + " (" + osData.release + ")";
 
   // Generate device info object
   const deviceInfo = {
     "CPU": cpuInfo,
-    "GPU": gpuInfo,
+    "GPU": gpuName,
+    "GPU Driver Version": gpuDriverVersion,
     "Memory": memSize,
     "Hardware": hwInfo,
-    "OS": osInfo,
+    "OS": platform,
+    "OS Version": osData.release,
     "Browser": "Chrome-" + chromeVersion
   };
   console.log(deviceInfo);

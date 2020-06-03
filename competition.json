@@ -1,27 +1,27 @@
 {
-  "Intel-Core-i5-8250U":{
+  "i5-8250U": {
     "arch": "KBL",
-    "competition": "AMD-Ryzen-5-2500U"
+    "competitor": "AMD-Ryzen-5-2500U"
   },
-  "Intel-Core-i7-7700": {
+  "i7-7700": {
     "arch": "KBL",
-    "competition": "AMD-Ryzen-7-1800X"
+    "competitor": "AMD-Ryzen-7-1800X"
   },
-  "Intel-Core-i7-8565U": {
+  "i7-8565U": {
     "arch": "WHL",
-    "competition": "AMD-Ryzen-7-3700U"
+    "competitor": "AMD-Ryzen-7-3700U"
   },
-  "Intel-Core-i7-8700K": {
+  "i7-8700K": {
     "arch": "CFL",
-    "competition": "AMD-Ryzen-7-2700X"
+    "competitor": "AMD-Ryzen-7-2700X"
   },
-  "Intel-Core-i9-9900K": {
+  "i9-9900K": {
     "arch": "CFL",
-    "competition": "AMD-Ryzen-9-3900X"
+    "competitor": "AMD-Ryzen-9-3900X"
   },
-  "11th-Gen-Intel-Core-i7-1165G7": {
+  "i7-1165G7": {
     "arch": "TGL",
-    "competition": "AMD-Ryzen-7-4700U"
+    "competitor": "AMD-Ryzen-7-4700U"
   },
   "arch-reference": "https://ark.intel.com/content/www/us/en/ark.html#@Processors"
 }
