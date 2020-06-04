@@ -20,9 +20,10 @@ This is a test automation framework based on [Playwright](https://github.com/mic
   3. This tool allows to run tests automatically in a pre-set scheduler by using [node-corn](https://github.com/node-cron/node-cron), you can set the test
   cadence via `test-cadence` field. Please refer to [cron syntax](https://www.npmjs.com/package/node-cron#cron-syntax) to check how to set a test cadence. The default cadence is running at 00:00 Saturday bi-weekly.
   4. `mail_test_report` field is used for setting stakeholders' mail list who'd like to receive the test report.
-  5. `mail_error_report` field is used for setting mail list who'd like to receive the error message when the testing goes into something wrong.
+  5. `mail_dev_notice` field is used for setting mail list who'd like to receive the error message when the testing goes into something wrong.
 
   ## Note
 
   - This tool uses playwright v1.02, which is only guarantee to support Chromium >= 84.0.4135.0.
   - Tester should maintain the cpu_list.json file which is a CPU info lists used for finding matched CPU code name and corresponding competitor's test result.
+  - Before testing, please restart the test device to make a clean up environment.
