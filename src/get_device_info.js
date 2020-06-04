@@ -20,14 +20,14 @@ async function getDeviceInfo() {
 
   // Get CPU info
   const cpuData = await si.cpu();
-  let cpuCodeName = "", cpuInfo = "", mfr = "";
+  let cpuCodeName = "", mfr = "";
   let cpuBrand = cpuData.brand;
   const cpuManufacturer = cpuData.manufacturer;
   // Intel CPU
   if ((cpuManufacturer + cpuBrand).includes("Intel")) {
     mfr = "Intel";
     cpuBrand = cpuBrand.split(" ").pop();
-    if (cpuBrand in Object.keys(cpuList["Intel"]))
+    if (cpuBrand in cpuList["Intel"])
       cpuCodeName = cpuList["Intel"][cpuBrand]["codename"];
     else
       return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in cpu_list.json`);
@@ -36,7 +36,7 @@ async function getDeviceInfo() {
     mfr = "AMD";
     // Trim the brand name, e.g. Ryzen 7 4700U with Radeon Graphics -> Ryzen 7 4700U
     cpuBrand = cpuBrand.split(" ").slice(0, 3).join(" ");
-    if(cpuBrand in Object.keys(cpuList["AMD"]))
+    if(cpuBrand in cpuList["AMD"])
       cpuCodeName = cpuList["AMD"][cpuBrand]["codename"];
     else
       return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in cpu_list.json`);
