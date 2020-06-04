@@ -1,0 +1,35 @@
+{
+  "Intel": {
+    "i7-8565U": {
+      "codename": "WHL",
+      "competitor": "Zen+ Ryzen 7 3700U"
+    },
+    "i7-8700K": {
+      "codename": "CFL",
+      "competitor": "Zen+ Ryzen 7 2700X"
+    },
+    "i9-9900K": {
+      "codename": "CFL",
+      "competitor": "Zen 2 Ryzen 9 3900X"
+    },
+    "i7-1165G7": {
+      "codename": "TGL",
+      "competitor": "Zen 2 Ryzen 7 4700U"
+    }
+  },
+  "AMD": {
+    "Ryzen 7 3700U": {
+      "codename": "Zen+"
+    },
+    "Ryzen 7 2700X": {
+      "codename": "Zen+"
+    },
+    "Ryzen 9 3900X": {
+      "codename": "Zen 2"
+    },
+    "Ryzen 7 4700U": {
+      "codename": "Zen 2"
+    }
+  },
+  "arch-reference": "https://ark.intel.com/content/www/us/en/ark.html#@Processors"
+}

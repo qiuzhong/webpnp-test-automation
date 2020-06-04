@@ -2,7 +2,7 @@
 
 const si = require('systeminformation');
 const getOtherInfo = require('./get_other_info.js');
-const competition = require('../competition.json');
+const cpuList = require('../cpu_list.json');
 
 /*
 * Get information of device info
@@ -20,32 +20,31 @@ async function getDeviceInfo() {
 
   // Get CPU info
   const cpuData = await si.cpu();
-  let cpuArch = "";
+  let cpuCodeName = "", cpuInfo = "", mfr = "";
   let cpuBrand = cpuData.brand;
   const cpuManufacturer = cpuData.manufacturer;
   // Intel CPU
-  if (cpuManufacturer.includes("Intel")) {
-    const IntelCpuList = Object.keys(competition);
-    if (IntelCpuList.includes(cpuBrand))
-      cpuArch = IntelCpuList[cpuBrand].arch;
+  if ((cpuManufacturer + cpuBrand).includes("Intel")) {
+    mfr = "Intel";
+    cpuBrand = cpuBrand.split(" ").pop();
+    if (cpuBrand in Object.keys(cpuList["Intel"]))
+      cpuCodeName = cpuList["Intel"][cpuBrand]["codename"];
     else
-      return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in competition.json`);
+      return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in cpu_list.json`);
   // AMD CPU
-  } else if (cpuManufacturer.includes("AMD")) {
+  } else if ((cpuManufacturer + cpuBrand).includes("AMD")) {
+    mfr = "AMD";
     // Trim the brand name, e.g. Ryzen 7 4700U with Radeon Graphics -> Ryzen 7 4700U
     cpuBrand = cpuBrand.split(" ").slice(0, 3).join(" ");
+    if(cpuBrand in Object.keys(cpuList["AMD"]))
+      cpuCodeName = cpuList["AMD"][cpuBrand]["codename"];
+    else
+      return Promise.reject(`Error: does not found matched Intel CPU info: (${cpuBrand}) in cpu_list.json`);
   } else {
     // Reject other CPU
     return Promise.reject(`Error: unknown CPU brand: ${cpuBrand}`);
   }
-  let info = "";
-  // AMD's CPU info
-  if (cpuArch === "")
-    info = cpuManufacturer + " " + cpuBrand;
-  //Intel's CPU info
-  else
-    info = cpuArch + " " + cpuBrand;
-  const cpuInfo = { "info": info, "arch": cpuArch, "brand": cpuBrand };
+  const cpuInfo = { mfr: mfr, "info": cpuCodeName + " " + cpuBrand, "codename": cpuCodeName, "brand": cpuBrand };
 
   // Get memory info
   const memData = await si.mem();
