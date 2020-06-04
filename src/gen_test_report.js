@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const competitionList = require('../competition.json');
+const cpuList = require('../cpu_list.json');
 const fsPromises = fs.promises;
 
 /*
@@ -20,13 +20,13 @@ function drawTableHeader(type, basedResult, preResult, competitorResult) {
     preCpu = `<th>${preResult.device_info.CPU.info}</th>`;
     preOs = `<th>${preResult.device_info.OS}</th>`;
     preBrowser = `<th>${preResult.device_info.Browser}</th>`;
-    vsPre = `<th rowspan='3'>Chrome vs. previous (${basedResult.device_info.CPU.arch})</th>`;
+    vsPre = `<th rowspan='3'>Chrome vs. previous (${basedResult.device_info.CPU.codename})</th>`;
   }
   if (competitorResult !== "") {
     comCpu = `<th>${competitorResult.device_info.CPU.info}</th>`;
     comOs = `<th>${competitorResult.device_info.OS}</th>`;
     comBrowser = `<th>${competitorResult.device_info.Browser}</th>`;
-    vsCom = `<th rowspan='3'>${basedResult.device_info.CPU.arch} vs. AMD</th></tr>`;
+    vsCom = `<th rowspan='3'>${basedResult.device_info.CPU.codename} vs. ${competitorResult.device_info.CPU.codename}</th></tr>`;
   }
   const tableHeader = `<tr><th rowspan="3">${firstCol}</th>\
                      ${preCpu + comCpu}<th>${basedResult.device_info.CPU.info}</th>${vsPre + vsCom}\
@@ -116,7 +116,7 @@ function drawResultTable(basedResult, preResult, competitorResult) {
 
 async function findPreTestResult(resultPath) {
   const dir = await fs.promises.opendir(path.dirname(resultPath));
-  // Gets cpu info from the test report file, e.g. Intel-Core-i5-8350U
+  // Gets cpu info from the test report file, e.g. Intel-KBL-i5-8350U
   const currentCPU = path.basename(resultPath).split('_')[1];
   if (dir.length == 0)
     return Promise.reject("Error: no test result found!");
@@ -146,15 +146,15 @@ async function findCompetitorResult(resultPath) {
   const dir = await fs.promises.opendir(path.dirname(resultPath));
   const basedFileName = path.basename(resultPath).split('_');
   const basedCpuInfo = basedFileName[1];
-  // competition.json's keys are cpu brand name
+  // cpu_list.json's keys are cpu brand name
   const basedCpuBrand = basedCpuInfo.slice(basedCpuInfo.indexOf('-') + 1);
   const basedChromeVersion = basedFileName[2];
 
   let matchedAmdInfo = "";
-  if (competitionList[basedCpuBrand])
-    matchedAmdInfo = competitionList[basedCpuBrand].competitor;
+  if (basedCpuBrand in Object.keys(cpuList["Intel"]))
+    matchedAmdInfo = cpuList["Intel"][basedCpuBrand]["competitor"].replace(/\s/g, '-');
   else
-    return Promise.reject(`Error: does not found matched Intel CPU info: (${basedCpuInfo}) in competition.json`);
+    return Promise.reject(`Error: does not found matched Intel CPU info: (${basedCpuInfo}) in cpu_list.json`);
 
   let amdDirents = [];
   for await (const dirent of dir) {
@@ -235,7 +235,7 @@ async function genTestReport(resultPaths) {
     // Find previous test result
     const preResult = await findPreTestResult(resultPath);
     // Try to find competitor test result only when based test result is running on Intel
-    if (basedResult.device_info.CPU.arch !== "")
+    if (basedResult.device_info.CPU.mft === "Intel")
       // Find competitor test result
       competitorResult = await findCompetitorResult(resultPath);
     if(!flag) {
