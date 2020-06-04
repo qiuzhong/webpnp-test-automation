@@ -147,7 +147,8 @@ async function findCompetitorResult(resultPath) {
   const basedFileName = path.basename(resultPath).split('_');
   const basedCpuInfo = basedFileName[1];
   // cpu_list.json's keys are cpu brand name
-  const basedCpuBrand = basedCpuInfo.slice(basedCpuInfo.indexOf('-') + 1);
+  let basedCpuBrand = basedCpuInfo.slice(basedCpuInfo.indexOf('-') + 1);
+  basedCpuBrand =basedCpuBrand.slice(basedCpuBrand.indexOf('-') + 1);
   const basedChromeVersion = basedFileName[2];
 
   let matchedAmdInfo = "";
@@ -235,7 +236,7 @@ async function genTestReport(resultPaths) {
     // Find previous test result
     const preResult = await findPreTestResult(resultPath);
     // Try to find competitor test result only when based test result is running on Intel
-    if (basedResult.device_info.CPU.mft === "Intel")
+    if (basedResult.device_info.CPU.mfr === "Intel")
       // Find competitor test result
       competitorResult = await findCompetitorResult(resultPath);
     if(!flag) {
