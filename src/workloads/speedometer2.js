@@ -30,10 +30,10 @@ async function runSpeedometer2Test(workload) {
   const subcaseTable = await page.$('#detailed-results > table:nth-child(3)');
   const subcaseScore = await subcaseTable.evaluate((element) => {
     let subcase = {};
-    let unit = element.rows[0].cells[1].textContent.replace('Score', '');
+    // let unit = element.rows[0].cells[1].textContent.replace('Score', '');
 
     for (let i = 1; i < element.rows.length; i++) {
-      let subItem = element.rows[i].cells[0].textContent + unit;
+      let subItem = element.rows[i].cells[0].textContent; // + unit;
       let subScore = element.rows[i].cells[1].textContent;
       subcase[subItem] = subScore;
     }

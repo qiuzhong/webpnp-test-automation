@@ -68,12 +68,12 @@ async function storeTestData(deviceInfo, workload, jsonData) {
     fs.mkdirSync(testResultsDir, {recursive: true});
   }
 
-  let cpu = deviceInfo['CPU']['info'].replace(/\s/g, '-');
+  let cpuInfo = '-'.join(deviceInfo['CPU']['mfr'], deviceInfo['CPU']['info'].replace(/\s/g, '-'));
   let date = new Date();
   let isoDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
   let jsonDate = isoDate.toISOString().split('.')[0].replace(/T|-|:/g, '');
   let browser = deviceInfo['Browser']
-  let jsonFilename = jsonDate + '_' + cpu + '_' + browser + '.json';
+  let jsonFilename = jsonDate + '_' + cpuInfo + '_' + browser + '.json';
   let absJSONFilename = path.join(testResultsDir, jsonFilename);
 
   await fsPromises.writeFile(absJSONFilename, JSON.stringify(jsonData, null, 4));
