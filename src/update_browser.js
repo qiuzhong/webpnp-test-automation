@@ -65,8 +65,7 @@ function chromeUpdateDirectoryExist() {
 async function checkBrowserVersion(deviceInfo) {
 
   let browserInfo = deviceInfo.Browser.split('-');
-  let currentVersion = browserInfo[browserInfo.length - 1];
-  console.log(currentVersion);
+  let currentVersion = browserInfo.pop();
 
   if (!('chrome_canary_version' in settings)) {
     return Promise.resolve();

@@ -23,7 +23,6 @@ async function main() {
   let deviceInfo = {};
   try {
     deviceInfo = await genDeviceInfo();
-    console.log(deviceInfo);
 
     // in dev mode, check browser version will be skipped.
     if (!settings.dev_mode) {
