@@ -151,7 +151,7 @@ async function findCompetitorResult(resultPath) {
   const basedChromeVersion = basedFileName[2];
 
   let matchedAmdInfo = "";
-  if (basedCpuBrand in Object.keys(cpuList["Intel"]))
+  if (basedCpuBrand in cpuList["Intel"])
     matchedAmdInfo = cpuList["Intel"][basedCpuBrand]["competitor"].replace(/\s/g, '-');
   else
     return Promise.reject(`Error: does not found matched Intel CPU info: (${basedCpuInfo}) in cpu_list.json`);
