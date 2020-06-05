@@ -115,22 +115,23 @@ function drawResultTable(basedResult, preResult, competitorResult) {
 }
 
 async function findPreTestResult(resultPath) {
-  const dir = await fs.promises.opendir(path.dirname(resultPath));
+  const dir = await fs.promises.readdir(path.dirname(resultPath));
   // Gets cpu info from the test report file, e.g. Intel-KBL-i5-8350U
   const currentCPU = path.basename(resultPath).split('_')[1];
+  const currentBrowser = path.basename(resultPath).split('_')[2];
   if (dir.length == 0)
     return Promise.reject("Error: no test result found!");
   else if (dir.length == 1)
     return Promise.resolve("");
   else {
     let dirents = [];
-    for await (const dirent of dir) {
-      // We only compare same CPU versions
-      if (currentCPU === dirent.name.split('_')[1])
-        dirents.push(dirent.name);
+    for (const dirent of dir) {
+      // We only compare same CPU versions and previous browser version
+      if (currentCPU === dirent.split('_')[1] && currentBrowser > dirent.split('_')[2])
+        dirents.push(dirent);
     }
-    if (dirents.length > 1) {
-      const comparedPath = path.join(path.dirname(resultPath), dirents.sort().reverse()[1]);
+    if (dirents.length > 0) {
+      const comparedPath = path.join(path.dirname(resultPath), dirents.sort().pop());
       console.log("Found the previus test result: ", comparedPath);
       const rawComparedData = await fsPromises.readFile(comparedPath, 'utf-8');
       const preResult = JSON.parse(rawComparedData);
@@ -143,7 +144,7 @@ async function findPreTestResult(resultPath) {
 }
 
 async function findCompetitorResult(resultPath) {
-  const dir = await fs.promises.opendir(path.dirname(resultPath));
+  const dir = await fs.promises.readdir(path.dirname(resultPath));
   const basedFileName = path.basename(resultPath).split('_');
   const basedCpuInfo = basedFileName[1];
   // cpu_list.json's keys are cpu brand name
@@ -158,17 +159,17 @@ async function findCompetitorResult(resultPath) {
     return Promise.reject(`Error: does not found matched Intel CPU info: (${basedCpuInfo}) in cpu_list.json`);
 
   let amdDirents = [];
-  for await (const dirent of dir) {
+  for (const dirent of dir) {
     // We only find matched AMD cpu
-    if (dirent.name.split('_')[1].includes(matchedAmdInfo) && dirent.name.split('_')[2].includes(basedChromeVersion))
-      amdDirents.push(dirent.name);
+    if (dirent.split('_')[1].includes(matchedAmdInfo) && dirent.split('_')[2].includes(basedChromeVersion))
+      amdDirents.push(dirent);
   }
   if (amdDirents.length == 0) {
     return Promise.resolve("");
   } else {
     // Find AMD test result with latest execution time
     const amdPath = path.join(path.dirname(resultPath), amdDirents.sort().reverse()[0]);
-    console.log("Found the previus test result: ", amdPath);
+    console.log("Found the competitor test result: ", amdPath);
     const rawComparedData = await fsPromises.readFile(amdPath, 'utf-8');
     const amdResult = JSON.parse(rawComparedData);
     console.log("Competitor result: ", amdResult);
