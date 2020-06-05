@@ -7,6 +7,7 @@ const updateBrowser = require('./src/update_browser.js');
 const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
+const excel = require('./src/excel.js');
 const cron = require('node-cron');
 const moment = require('moment');
 const os = require('os');
@@ -31,6 +32,7 @@ async function main() {
 
     const workloadResults = await runTest.genWorkloadsResults(deviceInfo);
     console.log(JSON.stringify(workloadResults, null, 4));
+    await excel.genExcelFilesAndUpload(workloadResults);
 
     let mailType = 'test_report';
     if (cpuModel.includes('AMD'))
