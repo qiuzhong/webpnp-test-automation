@@ -80,7 +80,6 @@ async function updateConfig(deviceInfo, settings) {
 async function updateWinChrome() {
 
   configChromePath(settings);
-
   let updateDir = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Update');
   if (fs.existsSync(updateDir)) {
     console.log('********** Getting chrome version before update **********');

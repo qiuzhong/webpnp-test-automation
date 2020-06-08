@@ -3,7 +3,7 @@
 
 const genDeviceInfo = require('./src/get_device_info.js');
 const runTest = require('./src/run.js');
-const updateBrowser = require('./src/update_browser.js');
+const browser = require('./src/browser.js');
 const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
@@ -27,7 +27,7 @@ async function main() {
 
     // in dev mode, check browser version will be skipped.
     if (!settings.dev_mode) {
-      await updateBrowser.checkBrowserVersion(deviceInfo);
+      await browser.checkBrowserVersion(deviceInfo);
     }
 
     const workloadResults = await runTest.genWorkloadsResults(deviceInfo);
@@ -58,13 +58,13 @@ async function main() {
   }
 
   // Update the browser version in config.json if necessary
-  await updateBrowser.updateConfig(deviceInfo, settings);
+  await browser.updateConfig(deviceInfo, settings);
 }
 
 
 if (settings.enable_cron) {
   cron.schedule(settings.update_browser_sched, () => {
-    updateBrowser.updateChrome();
+    browser.updateChrome();
   });
   if (cpuModel.includes('Intel')) {
     cron.schedule(settings.intel_test_cadence, () => {

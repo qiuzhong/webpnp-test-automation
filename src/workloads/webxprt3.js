@@ -1,12 +1,12 @@
 const settings = require('../../config.json');
-const browser = require('../browser.js');
+const platformBrowser = require('../browser.js');
 const { chromium } = require('playwright-chromium');
 
 
 async function runWebXPRT3Test(workload) {
   // let workload = settings.workloads[0];
 
-  browser.configChromePath(settings);
+  platformBrowser.configChromePath(settings);
   console.log('********** Start running WebXPRT3 tests **********');
   const browser = await chromium.launch({
     headless: false,
