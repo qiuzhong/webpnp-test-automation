@@ -1,6 +1,7 @@
 "use strict";
 
 const settings = require('../config.json');
+const browser = require('./browser.js');
 const { chromium } = require('playwright-chromium');
 
 /*
@@ -8,6 +9,7 @@ const { chromium } = require('playwright-chromium');
 */
 async function getOtherInfo() {
   console.log('********** Get other device info **********');
+  browser.configChromePath(settings);
   const chromePath = settings.chrome_path;
   const browser = await chromium.launch({
       headless: false,

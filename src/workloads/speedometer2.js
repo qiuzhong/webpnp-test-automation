@@ -1,9 +1,11 @@
 const settings = require('../../config.json');
+const browser = require('../browser.js');
 const { chromium } = require('playwright-chromium');
 
 async function runSpeedometer2Test(workload) {
   // let workload = settings.workloads[1];
 
+  browser.configChromePath(settings);
   console.log(`********** Start running ${workload.name} tests **********`);
   const browser = await chromium.launch({
     headless: false,

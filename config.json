@@ -13,7 +13,8 @@
       "sleep_interval": 300
     }
   ],
-  "chrome_path": "C:\\Users\\qiuzhonx\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
+  "win_chrome_path": "HOME_DIR\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
+  "linux_chrome_path": "/usr/bin/google-chrome-unstable",
   "update_browser_sched": "0 0 0 * * Sat",
   "intel_test_cadence": "0 0 4 * * Sat",
   "amd_test_cadence": "0 0 1 * * Sat",
@@ -38,5 +39,6 @@
     "username": "jxq",
     "password": "4r4r$R$R"
   },
+  "chrome_linux_password": "",
   "dev_mode": false
 }
