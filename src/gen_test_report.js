@@ -79,7 +79,7 @@ function drawRoundsResult(basedResult, competitorResult) {
   return resultCol;
 }
 
-function drawResultTable(basedResult, preResult, competitorResult) {
+function drawResultTable(basedResult, preResult, competitorResult, hasPreResult) {
   let summaryCol = "";
   let resultTable = "<table>" + drawTableHeader("details", basedResult, preResult, competitorResult);
 
@@ -105,10 +105,16 @@ function drawResultTable(basedResult, preResult, competitorResult) {
       }
       competitorCol = `<td>${competitorValue}</td>`;
     }
-    // Draw summaryCol and resultTable
-    if (key == "Total Score")
-      summaryCol = `<tr><td>${basedResult.workload}</td>${preCol + competitorCol}<td>${basedValue}</td>${vsPreCol + vsCompetitorCol}</tr>`;
+    // Draw resultTable
     resultTable += `<tr><td>${key}</td>${preCol + competitorCol}<td>${basedValue}</td>${vsPreCol + vsCompetitorCol}</tr>`;
+    // Draw summaryCol
+    if (key == "Total Score") {
+      if (preResult === "" && hasPreResult) {
+        preCol = "<td>-</td>";
+        vsPreCol = "<td>-</td>";
+      }
+      summaryCol = `<tr><td>${basedResult.workload}</td>${preCol + competitorCol}<td>${basedValue}</td>${vsPreCol + vsCompetitorCol}</tr>`;
+    }
   }
 
   return {"all":`${resultTable}</table>`, "summaryCol": summaryCol};
@@ -203,13 +209,25 @@ function drawDeviceInfoTable(result) {
   return `${deviceInfoTable}</table>`;
 }
 
+async function hasPreResults(resultPaths) {
+  let hasPreResult = false;
+  for (const key in resultPaths) {
+    const resultPath = resultPaths[key];
+    // Find previous test result
+    const preResult = await findPreTestResult(resultPath);
+    if (preResult !== "")
+      hasPreResult = true;
+  }
+  return hasPreResult;
+
+}
 /*
 * Generate test report as html
 * @param: {Object}, resultPaths, an object reprensents for test result path
 * e.g.
 * {
-*   "Speedometer2": path.join(__dirname, "../results/Speedometer2/202005261300_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json"),
-*	  "WebXPRT3": path.join(__dirname, "../results/WebXPRT3/202005261555_Intel-Core-i5-8350U_Chrome-85.0.4154.0.json")
+*   "Speedometer2": path.join(__dirname, "../results/Windows/Speedometer2/20200606042844_Intel-TGL-i7-1165G7_Chrome-Canary-85.0.4165.0.json"),
+*	  "WebXPRT3": path.join(__dirname, "../results/Windows/WebXPRT3/20200606053303_Intel-TGL-i7-1165G7_Chrome-Canary-85.0.4165.0.json")
 * }
 */
 async function genTestReport(resultPaths) {
@@ -220,6 +238,7 @@ async function genTestReport(resultPaths) {
   let roundsTable = "<table>";
   let basedResult;
   let flag = false;
+  const hasPreResult = hasPreResults(resultPaths);
   for (const key in resultPaths) {
     const resultPath = resultPaths[key];
 
@@ -244,7 +263,7 @@ async function genTestReport(resultPaths) {
       summaryTable += drawTableHeader("summary", basedResult, preResult, competitorResult);
       roundsTable += drawRoundsHeader(basedResult, competitorResult);
     }
-    const resultTable = drawResultTable(basedResult, preResult, competitorResult);
+    const resultTable = drawResultTable(basedResult, preResult, competitorResult, hasPreResult);
     resultTables += `${resultTable.all}<br>`;
     summaryTable += resultTable.summaryCol;
     roundsTable += drawRoundsResult(basedResult, competitorResult);
