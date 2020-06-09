@@ -142,7 +142,7 @@ async function findPreTestResult(resultPath) {
     }
     if (dirents.length > 0) {
       const comparedPath = path.join(path.dirname(resultPath), dirents.sort().pop());
-      console.log("Found the previus test result: ", comparedPath);
+      console.log("Found the previous test result: ", comparedPath);
       const rawComparedData = await fsPromises.readFile(comparedPath, 'utf-8');
       const preResult = JSON.parse(rawComparedData);
       console.log("compared result: ", preResult);
@@ -214,15 +214,14 @@ function drawDeviceInfoTable(result) {
 }
 
 async function hasPreResults(resultPaths) {
-  let hasPreResult = false;
   for (const key in resultPaths) {
     const resultPath = resultPaths[key];
     // Find previous test result
     const preResult = await findPreTestResult(resultPath);
     if (preResult !== "")
-      hasPreResult = true;
+      return Promise.resolve(true);
   }
-  return hasPreResult;
+  return Promise.resolve(false);
 
 }
 /*
@@ -242,7 +241,7 @@ async function genTestReport(resultPaths) {
   let roundsTable = "<table>";
   let basedResult;
   let flag = false;
-  const hasPreResult = hasPreResults(resultPaths);
+  const hasPreResult = await hasPreResults(resultPaths);
   for (const key in resultPaths) {
     const resultPath = resultPaths[key];
 
