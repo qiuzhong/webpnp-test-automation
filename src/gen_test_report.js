@@ -125,6 +125,7 @@ async function findPreTestResult(resultPath) {
   // Gets cpu info from the test report file, e.g. Intel-KBL-i5-8350U
   const currentCPU = path.basename(resultPath).split('_')[1];
   const currentBrowser = path.basename(resultPath).split('_')[2];
+  const currentBrowserChannel = currentBrowser.split('-')[1];
   if (dir.length == 0)
     return Promise.reject("Error: no test result found!");
   else if (dir.length == 1)
@@ -133,7 +134,10 @@ async function findPreTestResult(resultPath) {
     let dirents = [];
     for (const dirent of dir) {
       // We only compare same CPU versions and previous browser version
-      if (currentCPU === dirent.split('_')[1] && currentBrowser > dirent.split('_')[2])
+      const prevBrowser = dirent.split('_')[2];
+      const prevBrowserChannel = prevBrowser.split('-')[1];
+      if (currentCPU === dirent.split('_')[1] && currentBrowserChannel === prevBrowserChannel &&
+          currentBrowser > prevBrowser)
         dirents.push(dirent);
     }
     if (dirents.length > 0) {
