@@ -1,10 +1,12 @@
 "use strict";
 
 const fs = require('fs');
+const fsPromises = fs.promises;
 const path = require('path');
 const os = require('os');
 const cpuList = require('../cpu_list.json');
-const fsPromises = fs.promises;
+const chart = require('./chart.js');
+
 
 /*
 * Draw table header
@@ -284,7 +286,12 @@ async function genTestReport(resultPaths) {
 	  th {background-color: #0071c5; color: #ffffff; font-weight: normal;} \
 		</style>";
   // Composite html body
-  const html = htmlStyle + "<b>Summary:</b>" + summaryTable + roundsTable + "<b>Details:</b>"
+  let charts = await chart.getChartFiles();
+  let chartImages = '<br/>';
+  for (let chart of charts) {
+    chartImages += '<img src="cid:' + chart.replace('.json', '') + '"><br/>';
+  }
+  const html = htmlStyle + "<b>Summary:</b>" + chartImages + summaryTable + roundsTable + "<b>Details:</b>"
                + resultTables + "<br><br>" + "<b>Device Info:</b>" + deviceInfoTable;
   console.log("**Generated html: ", html);
   return Promise.resolve(html);

@@ -23,6 +23,7 @@
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.6",
     "playwright-chromium": "^1.0.2",
+    "ssh2-promise": "^0.1.7",
     "ssh2-sftp-client": "^5.1.2",
     "systeminformation": "^4.26.4"
   }

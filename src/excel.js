@@ -3,6 +3,7 @@ const fsPromises = fs.promises;
 const path = require('path');
 const xl = require('excel4node');
 const Client = require('ssh2-sftp-client');
+const SSH2Promise = require('ssh2-promise');
 const run = require('./run.js');
 const settings = require('../config.json');
 
@@ -56,6 +57,7 @@ async function genExcelFilesAndUpload(fileInfo) {
   let excelPathName = path.join(excelDir, excelFileName);
   await writeDataToExcel(excelPathName, results);
   await uploadExcelFile(excelPathName);
+  await remoteExecUploadScript();
 
   return Promise.resolve();
 }
@@ -143,9 +145,9 @@ async function uploadExcelFile(pathname) {
   let excelName = path.basename(pathname);
   let sftp = new Client();
   let serverConfig = {
-    host: settings.excel_server.host,
-    username: settings.excel_server.username,
-    password: settings.excel_server.password
+    host: settings.result_server.host,
+    username: settings.result_server.username,
+    password: settings.result_server.password
   };
   let remoteResultDir = `/home/${serverConfig.username}/PHP/files`;
   try {
@@ -175,6 +177,30 @@ async function uploadExcelFile(pathname) {
   return Promise.resolve();
 }
 
+/*
+* Remote execute upload.py to upload the excel data to web server
+*/
+async function remoteExecUploadScript() {
+  let serverConfig = {
+    host: settings.result_server.host,
+    username: settings.result_server.username,
+    password: settings.result_server.password
+  };
+  let  ssh = new SSH2Promise(serverConfig);
+  try {
+    await ssh.connect();
+    console.log(`Remote server ${serverConfig.host} connected`);
+    console.log(`Executing upload.py on remote server:`);
+    let output = await ssh.exec(`/usr/bin/python3 /home/${serverConfig.username}/PHP/hello.py`);
+    console.log(output.toString());
+  } catch (err) {
+    console.log(err);
+  } finally {
+    await ssh.close();
+  }
+
+  return Promise.resolve();
+}
 
 module.exports = {
   genExcelFilesAndUpload: genExcelFilesAndUpload

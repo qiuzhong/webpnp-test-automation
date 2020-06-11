@@ -8,6 +8,7 @@ const genTestReport = require('./src/gen_test_report.js');
 const sendMail = require('./src/send_mail.js');
 const settings = require('./config.json');
 const excel = require('./src/excel.js');
+const chart = require('./src/chart.js');
 const cron = require('node-cron');
 const moment = require('moment');
 const os = require('os');
@@ -34,6 +35,13 @@ async function main() {
     console.log(JSON.stringify(workloadResults, null, 4));
     await excel.genExcelFilesAndUpload(workloadResults);
 
+    let chartImages = [];
+    if (deviceInfo.browser.includes('Canary')) { // only attach the trend charts for Canary tests
+      await chart.dlCharts();
+      chartImages = await chart.getChartFiles();
+      console.log(chartImages);
+    }
+
     let mailType = 'test_report';
     if (cpuModel.includes('AMD'))
       mailType = 'dev_notice'; // If the test is on AMD platform, then send dev team.
@@ -42,7 +50,7 @@ async function main() {
 
     let subject = '[W' + weekAndDay + '] Web PnP weekly automation test report - ' + platform + ' - ' + deviceInfo.Browser;
     console.log(subject);
-    await sendMail(subject, testReports, mailType);
+    await sendMail(subject, testReports, mailType, chartImages);
   } catch (err) {
 
     console.log(err);
@@ -59,6 +67,10 @@ async function main() {
 
   // Update the browser version in config.json if necessary
   await browser.updateConfig(deviceInfo, settings);
+
+  if (deviceInfo.Browser.includes('Canary')) {
+    await chart.cleanUpChartFiles();
+  }
 }
 
 

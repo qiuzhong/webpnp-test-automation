@@ -34,11 +34,7 @@
     "username": "banana",
     "password": "000"
   },
-  "excel_server": {
-    "host": "10.239.115.22",
-    "username": "jxq",
-    "password": "4r4r$R$R"
-  },
   "chrome_linux_password": "",
+  "chart_page_url": "http://10.239.115.22",
   "dev_mode": false
 }
