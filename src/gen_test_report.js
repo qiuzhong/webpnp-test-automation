@@ -289,7 +289,7 @@ async function genTestReport(resultPaths) {
   let charts = await chart.getChartFiles();
   let chartImages = '<br/>';
   for (let chart of charts) {
-    chartImages += '<img src="cid:' + chart.replace('.json', '') + '"><br/>';
+    chartImages += '<img src="cid:' + chart.replace('.png', '') + '"><br/>';
   }
   const html = htmlStyle + "<b>Summary:</b>" + chartImages + summaryTable + roundsTable + "<b>Details:</b>"
                + resultTables + "<br><br>" + "<b>Device Info:</b>" + deviceInfoTable;
