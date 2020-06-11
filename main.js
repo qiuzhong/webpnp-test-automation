@@ -36,7 +36,7 @@ async function main() {
     await excel.genExcelFilesAndUpload(workloadResults);
 
     let chartImages = [];
-    if (deviceInfo.browser.includes('Canary')) { // only attach the trend charts for Canary tests
+    if (deviceInfo.Browser.includes('Canary')) { // only attach the trend charts for Canary tests
       await chart.dlCharts();
       chartImages = await chart.getChartFiles();
       console.log(chartImages);
