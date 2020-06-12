@@ -10,9 +10,11 @@ async function runWebXPRT3Test(workload) {
   console.log('********** Start running WebXPRT3 tests **********');
   const browser = await chromium.launch({
     headless: false,
-    executablePath: settings.chrome_path
+    executablePath: settings.chrome_path,
+    args: ["--start-maximized"]
   });
-  const page = await browser.newPage();
+  const context = await browser.newContext({ viewport: null });
+  const page = await context.newPage();
 
   console.log(`********** Going to URL: ${workload.url} **********`);
   await page.goto(workload.url);
