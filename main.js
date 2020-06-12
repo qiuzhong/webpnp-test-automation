@@ -36,7 +36,9 @@ async function main() {
     await excel.genExcelFilesAndUpload(workloadResults);
 
     let chartImages = [];
-    if (deviceInfo.Browser.includes('Canary')) { // only attach the trend charts for Canary tests
+    // only attach the trend charts for Canary tests
+    // Since AMD testing is before Intel, downloading charts is available after Intel testing done.
+    if (deviceInfo.Browser.includes('Canary') && cpuModel.includes('Intel')) {
       await chart.dlCharts();
       chartImages = await chart.getChartFiles();
       console.log(chartImages);
