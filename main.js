@@ -70,7 +70,7 @@ async function main() {
   // Update the browser version in config.json if necessary
   await browser.updateConfig(deviceInfo, settings);
 
-  if (deviceInfo.Browser.includes('Canary')) {
+  if (deviceInfo.Browser.includes('Canary') && cpuModel.includes('Intel')) {
     await chart.cleanUpChartFiles();
   }
 }
