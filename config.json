@@ -35,6 +35,6 @@
     "password": "000"
   },
   "chrome_linux_password": "",
-  "chart_page_url": "http://10.239.115.22",
+  "chart_page_url": "http://webpnp.sh.intel.com/",
   "dev_mode": false
 }
