@@ -191,7 +191,7 @@ async function remoteExecUploadScript() {
     await ssh.connect();
     console.log(`Remote server ${serverConfig.host} connected`);
     console.log(`Executing upload.py on remote server:`);
-    let output = await ssh.exec(`/usr/bin/python3 /home/${serverConfig.username}/PHP/hello.py`);
+    let output = await ssh.exec(`/usr/bin/python3 /home/${serverConfig.username}/PHP/upload.py`);
     console.log(output.toString());
   } catch (err) {
     console.log(err);
