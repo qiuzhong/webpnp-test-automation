@@ -1,20 +1,26 @@
 const settings = require('../../config.json');
 const platformBrowser = require('../browser.js');
 const { chromium } = require('playwright-chromium');
-
+const path = require('path');
+const fs = require('fs');
 
 async function runWebXPRT3Test(workload) {
   // let workload = settings.workloads[0];
 
   platformBrowser.configChromePath(settings);
   console.log('********** Start running WebXPRT3 tests **********');
-  const browser = await chromium.launch({
+  const userDataDir = path.join(process.cwd(), 'userData');
+  if (fs.existsSync(userDataDir)) {
+    fs.rmdirSync(userDataDir, { recursive: true });
+  }
+  fs.mkdirSync(userDataDir);
+  const browser = await chromium.launchPersistentContext(userDataDir, {
     headless: false,
     executablePath: settings.chrome_path,
-    args: ["--start-maximized"]
+    args: ["--start-maximized"],
+    viewport: null
   });
-  const context = await browser.newContext({ viewport: null });
-  const page = await context.newPage();
+  const page = await browser.newPage();
 
   console.log(`********** Going to URL: ${workload.url} **********`);
   await page.goto(workload.url);
@@ -67,6 +73,5 @@ async function runWebXPRT3Test(workload) {
     scores: scores
   });
 }
-
 
 module.exports = runWebXPRT3Test;
