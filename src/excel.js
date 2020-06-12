@@ -57,7 +57,6 @@ async function genExcelFilesAndUpload(fileInfo) {
   let excelPathName = path.join(excelDir, excelFileName);
   await writeDataToExcel(excelPathName, results);
   await uploadExcelFile(excelPathName);
-  await remoteExecUploadScript();
 
   return Promise.resolve();
 }
