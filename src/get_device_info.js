@@ -16,7 +16,7 @@ async function getDeviceInfo() {
   // Get GPU info
   const gpuData = await si.graphics();
   const gpuModel = gpuData.controllers.slice(-1)[0].model;
-  const gpuName = gpuModel.replace("(TM)", "").replace("(R)", "");
+  const gpuName = gpuModel.replace("(TM)", "").replace("(R)", "").replace("Intel ", "").replace.name("AMD ", "");
 
   // Get CPU info
   const cpuData = await si.cpu();
