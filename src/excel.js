@@ -202,5 +202,6 @@ async function remoteExecUploadScript() {
 }
 
 module.exports = {
-  genExcelFilesAndUpload: genExcelFilesAndUpload
+  genExcelFilesAndUpload: genExcelFilesAndUpload,
+  remoteExecUploadScript: remoteExecUploadScript
 };
