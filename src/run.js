@@ -4,6 +4,8 @@ const fsPromises = fs.promises;
 const path = require('path');
 const runSpeedometer2 = require('./workloads/speedometer2.js');
 const runWebXPRT3 = require('./workloads/webxprt3.js');
+const runUnity3D = require('./workloads/unity3d.js');
+const runJetStream2 = require('./workloads/jetstream2.js');
 const settings = require('../config.json');
 const Client = require('ssh2-sftp-client');
 
@@ -33,7 +35,10 @@ function sortScores(scoresArray, score, propertyName) {
 async function runWorkload(workload, executor) {
   let originScoresArray = [];
   let scoresArray = [];
-
+  // if workload === unity3D, warm up
+  if (workload.name === "Unity3D") {
+    await executor(workload);
+  }
   for (let i = 0; i < workload.run_times; i++) {
     let thisScore = await executor(workload);
     originScoresArray.push(thisScore);
@@ -174,7 +179,9 @@ async function genWorkloadsResults(deviceInfo) {
   let results = {};
   let executors = {
     'Speedometer2': runSpeedometer2,
-    'WebXPRT3': runWebXPRT3
+    'WebXPRT3': runWebXPRT3,
+    'Unity3D': runUnity3D,
+    'JetStream2': runJetStream2
   };
 
   for (const workload of settings.workloads) {
