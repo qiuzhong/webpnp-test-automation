@@ -17,8 +17,7 @@ async function runWebXPRT3Test(workload) {
   const browser = await chromium.launchPersistentContext(userDataDir, {
     headless: false,
     executablePath: settings.chrome_path,
-    args: ["--start-maximized"],
-    viewport: null
+    args: ["--start-maximized"]
   });
   const page = await browser.newPage();
 
@@ -27,6 +26,7 @@ async function runWebXPRT3Test(workload) {
 
   console.log("********** Running WebXPRT3 tests... **********");
   await page.click('xpath=//*[@id="startBtnDiv"]/div[3]/div/div/a/p');
+  await page.waitForTimeout(6 * 60 * 1000);
   await page.waitForSelector('xpath=//*[@id="medScnRes"]/div[2]/div[2]/div[1]/a/h4',
     {timeout: 10 * 60 * 1000}
   );

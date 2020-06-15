@@ -17,8 +17,7 @@ async function runSpeedometer2Test(workload) {
   const browser = await chromium.launchPersistentContext(userDataDir, {
     headless: false,
     executablePath: settings.chrome_path,
-    args: ["--start-maximized"],
-    viewport: null
+    args: ["--start-maximized"]
   });
   const page = await browser.newPage();
   console.log(`********** Going to URL: ${workload.url} **********`);
@@ -26,6 +25,7 @@ async function runSpeedometer2Test(workload) {
 
   console.log("********** Running Speedometer2 tests... **********");
   await page.click('xpath=//*[@id="home"]/div/button');
+  await page.waitForTimeout(2 * 60 * 1000);
   await page.waitForSelector('xpath=//*[@id="summarized-results"]/div[4]/button[2]',
     {timeout: 5 * 60 * 1000}
   );
