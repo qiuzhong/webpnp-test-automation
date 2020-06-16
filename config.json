@@ -14,8 +14,8 @@
     },
     {
       "name": "Unity3D",
-      "url": "http://cros_qa.sh.intel.com/unity3d-release/",
-      "run_times": 5,
+      "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/benchmarks2018/",
+      "run_times": 3,
       "sleep_interval": 300
     },
     {
