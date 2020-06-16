@@ -11,6 +11,18 @@
       "url": "http://test-server2.sh.intel.com/webxprt3/",
       "run_times": 5,
       "sleep_interval": 300
+    },
+    {
+      "name": "Unity3D",
+      "url": "http://cros_qa.sh.intel.com/unity3d-release/",
+      "run_times": 5,
+      "sleep_interval": 300
+    },
+    {
+      "name": "JetStream2",
+      "url": "http://user-awfy.sh.intel.com:8080/awfy/ARCworkloads/JetStream2-JSTC/",
+      "run_times": 5,
+      "sleep_interval": 300
     }
   ],
   "win_chrome_path": "HOME_DIR\\AppData\\Local\\Google\\Chrome SxS\\Application\\chrome.exe",
