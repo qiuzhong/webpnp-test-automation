@@ -49,23 +49,16 @@ async function runUnity3DTest(workload) {
   const enableFullscreen = await page.$('#overlay > button:nth-child(2)');
   await new Promise(resolve => setTimeout(resolve, 3000));
   await enableFullscreen.click();
-  const canvasElement = await page.waitForXPath('//*[@id="#canvas"]');
-  const startPosition = await canvasElement.evaluate(canvas => {
-    const canvas_width = canvas.width;
-    const canvas_height = canvas.height;
-
-    const start_button_offset_x = canvas_width / 2 / 1.1;
-    const start_button_offset_y = canvas_height / 2 * 1.5;
-
-    const rect = canvas.getBoundingClientRect();
-    const start_button_position_x = rect.left + start_button_offset_x;
-    const start_button_position_y = rect.top + start_button_offset_y;
-    return {x: start_button_position_x, y: start_button_position_y};
+  const canvasContainer = await page.$('#gameContainer');
+  const startPosition = await canvasContainer.evaluate(container => {
+    const containerHeight = container.offsetHeight;
+    const screenHeight = window.screen.height;
+    const y = (screenHeight - containerHeight) / 2 + containerHeight * 600 / 720;
+    return { x: window.screen.width / 2, y: y };
   });
   await page.mouse.click(startPosition.x, startPosition.y);
 
-
-  await page.waitForTimeout(5 * 60 * 1000);
+  await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000));
   return new Promise(async (resolve, reject) => {
     // Since the Unity3D's results are painted in a canvas, we have to get result from console log
     page.on('console', async msg => {
