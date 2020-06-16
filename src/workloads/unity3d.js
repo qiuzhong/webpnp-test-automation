@@ -67,8 +67,8 @@ async function runUnity3DTest(workload) {
         logList.push(msg.text());
         // "Overall: " is the last record of result log
         if (msg.text().includes("Overall: ")) {
-          // await page.close();
-          // await browser.close();
+          await page.close();
+          await browser.close();
           console.log("********** Running Unity3D tests completed **********");
           console.log('********** Unity3D tests score: **********');
           // Get last 13 records as which are the exact test results
@@ -94,5 +94,4 @@ async function runUnity3DTest(workload) {
     });
   });
 }
-
 module.exports = runUnity3DTest;
