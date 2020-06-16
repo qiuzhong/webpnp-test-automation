@@ -58,7 +58,7 @@ async function runUnity3DTest(workload) {
   });
   await page.mouse.click(startPosition.x, startPosition.y);
 
-  await new Promise(resolve => setTimeout(resolve, 5 * 60 * 1000));
+  await new Promise(resolve => setTimeout(resolve, 3 * 60 * 1000));
   return new Promise(async (resolve, reject) => {
     // Since the Unity3D's results are painted in a canvas, we have to get result from console log
     page.on('console', async msg => {
@@ -67,12 +67,19 @@ async function runUnity3DTest(workload) {
         logList.push(msg.text());
         // "Overall: " is the last record of result log
         if (msg.text().includes("Overall: ")) {
-          await page.close();
-          await browser.close();
-          console.log("********** Running Unity3D tests completed **********");
-          console.log('********** Unity3D tests score: **********');
-          // Get last 13 records as which are the exact test results
-          const scoresText = logList.slice(logList.length - 13, logList.length);
+		  await page.close();
+		  console.log("length: ", logList.length);
+		  let logIndex = 0;
+		  logList.reverse();
+		  for (let i =0; i< logList.length; i++) {
+			  if(logList[i].includes("Overall: ")) {
+				  logIndex = i;
+				  break;
+			  }
+		  }
+          // Get 13 records as which are the exact test results
+          let scoresText = logList.slice(logIndex, logIndex + 13);
+		  scoresText.reverse();
           // console.log(`********** ${scoresText}  **********`);
           for (const item of scoresText) {
             const key = item.split(": ")[0];
@@ -84,9 +91,13 @@ async function runUnity3DTest(workload) {
               scores[key] = value;
           }
           if (exactKeys.join(" ") === resultKeys.join(" ")) {
+			console.log("********** Running Unity3D tests completed **********");
+            console.log('********** Unity3D tests score: **********');
             console.log(scores);
+            await browser.close();
             resolve({ date: Date(), scores: scores });
           } else {
+			await browser.close();
             reject(`Error: Expected ${resultKeys} but got ${exactKeys}`);
           }
         }
