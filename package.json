@@ -21,7 +21,7 @@
     "excel4node": "^1.7.2",
     "moment": "^2.26.0",
     "node-cron": "^2.0.3",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.16",
     "playwright-chromium": "^1.0.0",
     "puppeteer": "^4.0.0",
     "ssh2-promise": "^0.1.7",
